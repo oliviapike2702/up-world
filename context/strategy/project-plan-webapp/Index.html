@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    :root {
+      --ink: #1c1a17; --paper: #f2efe9; --paper-raised: #ffffff; --line: #ddd6c9;
+      --text: #2a2723; --text-soft: #6b6459; --accent: #b9862f; --accent-soft: #b9862f22;
+      --secondary: #3e7c74; --secondary-soft: #3e7c7422;
+      --ok: #4c8f5f; --ok-bg: #4c8f5f1a; --risk: #c98a2e; --risk-bg: #c98a2e1a;
+      --overdue: #b23b2e; --overdue-bg: #b23b2e1a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--text);
+      font-family: ui-serif, Georgia, "Iowan Old Style", serif; -webkit-font-smoothing: antialiased; }
+    .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+    h1 { font-size: 1.6rem; font-weight: 600; margin: 0 0 4px; }
+    .subtitle { color: var(--text-soft); font-size: 0.9rem; margin: 0 0 24px; }
+    .status-banner { font-size: 0.82rem; color: var(--text-soft); margin-bottom: 18px; }
+    .status-banner.err { color: var(--overdue); }
+
+    .sheet-group { margin-bottom: 28px; }
+    .sheet-group h2 { font-size: 1.05rem; font-weight: 600; margin: 0 0 10px; }
+    .phase-group { margin-bottom: 14px; }
+    .phase-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--secondary); background: var(--secondary-soft); padding: 6px 14px; border-radius: 6px 6px 0 0; }
+
+    .task-card { background: var(--paper-raised); border: 1px solid var(--line); border-top: none; }
+    .phase-group:first-child .task-card { border-top: 1px solid var(--line); border-radius: 6px 6px 0 0; }
+    .task-row { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;
+      padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+    .task-row:last-child { border-bottom: none; }
+    .task-row.is-done { opacity: 0.45; }
+    .task-main p { margin: 0 0 3px; }
+    .task-meta { font-size: 0.76rem; color: var(--text-soft); }
+
+    select.status-select { font-family: inherit; font-size: 0.8rem; padding: 5px 8px; border-radius: 6px;
+      border: 1px solid var(--line); background: var(--paper-raised); color: var(--text); }
+    button.done-btn { font-family: inherit; font-size: 0.76rem; padding: 5px 10px; border-radius: 6px;
+      border: 1px solid var(--ok); background: var(--ok-bg); color: var(--ok); cursor: pointer; }
+    button.done-btn:hover { background: var(--ok); color: #fff; }
+
+    .row-error { font-size: 0.74rem; color: var(--overdue); margin-top: 4px; }
+    .empty { color: var(--text-soft); font-style: italic; padding: 20px; text-align: center; }
+
+    .done-toggle { font-size: 0.8rem; color: var(--secondary); cursor: pointer; margin: 10px 0; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Project Plan</h1>
+    <p class="subtitle">Editable, writes straight back to the real sheets. No refresh cycle to wait on.</p>
+    <div id="banner" class="status-banner">Loading&hellip;</div>
+    <div id="content"></div>
+  </div>
+
+  <script>
+    var STATUS_OPTIONS = ['Not started', 'Working on it', 'Partly done', 'Awaiting approval', 'Done'];
+    var showDone = {};
+
+    function load() {
+      google.script.run.withSuccessHandler(render).withFailureHandler(function (err) {
+        document.getElementById('banner').textContent = 'Could not load: ' + err.message;
+        document.getElementById('banner').className = 'status-banner err';
+      }).getPlanData();
+    }
+
+    function render(data) {
+      var banner = document.getElementById('banner');
+      banner.textContent = 'Last loaded ' + new Date(data.generatedAt).toLocaleString();
+      banner.className = 'status-banner';
+
+      var bySheet = {};
+      data.tasks.forEach(function (t) {
+        bySheet[t.sheetKey] = bySheet[t.sheetKey] || { label: t.sheetLabel, byPhase: {} };
+        bySheet[t.sheetKey].byPhase[t.phase] = bySheet[t.sheetKey].byPhase[t.phase] || [];
+        bySheet[t.sheetKey].byPhase[t.phase].push(t);
+      });
+
+      var html = '';
+      Object.keys(bySheet).forEach(function (sheetKey) {
+        var group = bySheet[sheetKey];
+        html += '<div class="sheet-group"><h2>' + escapeHtml(group.label) + '</h2>';
+        Object.keys(group.byPhase).forEach(function (phase) {
+          var tasks = group.byPhase[phase];
+          html += '<div class="phase-group">';
+          if (phase) html += '<div class="phase-label">' + escapeHtml(phase) + '</div>';
+          html += '<div class="task-card">';
+          tasks.forEach(function (t) {
+            var rowId = rowKey(t.sheetKey, t.phase, t.task);
+            var isDone = t.status === 'Done';
+            html += '<div class="task-row' + (isDone ? ' is-done' : '') + '" id="row-' + rowId + '" style="' + (isDone && !showDone[sheetKey] ? 'display:none;' : '') + '">';
+            html += '<div class="task-main"><p>' + escapeHtml(t.task) + '</p><span class="task-meta">' +
+              (t.owner ? 'Owner: ' + escapeHtml(t.owner) : '') + (t.when ? ' &middot; ' + escapeHtml(t.when) : '') +
+              (t.notes ? ' &middot; ' + escapeHtml(t.notes) : '') + '</span>' +
+              '<div class="row-error" id="err-' + rowId + '"></div></div>';
+            html += '<select class="status-select" onchange="updateStatus(this,\'' + esc(t.sheetKey) + '\',\'' + esc(t.phase) + '\',\'' + esc(t.task) + '\')">';
+            STATUS_OPTIONS.forEach(function (opt) {
+              html += '<option' + (opt === t.status ? ' selected' : '') + '>' + escapeHtml(opt) + '</option>';
+            });
+            html += '</select>';
+            html += '<button class="done-btn" onclick="markDone(this,\'' + esc(t.sheetKey) + '\',\'' + esc(t.phase) + '\',\'' + esc(t.task) + '\')">' + (isDone ? 'Done' : 'Mark done') + '</button>';
+            html += '</div>';
+          });
+          html += '</div></div>';
+        });
+        html += '<span class="done-toggle" onclick="toggleDone(\'' + esc(sheetKey) + '\')">show/hide done items</span>';
+        html += '</div>';
+      });
+
+      document.getElementById('content').innerHTML = html || '<div class="empty">Nothing loaded — check the sheets are reachable.</div>';
+    }
+
+    function toggleDone(sheetKey) {
+      showDone[sheetKey] = !showDone[sheetKey];
+      load(); // re-render from a fresh pull rather than trust stale client state
+    }
+
+    function rowKey(sheetKey, phase, task) {
+      return btoa(unescape(encodeURIComponent(sheetKey + '|' + phase + '|' + task))).replace(/[^a-zA-Z0-9]/g, '');
+    }
+    function esc(s) { return String(s).replace(/'/g, "\\'"); }
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function updateStatus(selectEl, sheetKey, phase, task) {
+      var newStatus = selectEl.value;
+      var rowId = rowKey(sheetKey, phase, task);
+      var errEl = document.getElementById('err-' + rowId);
+      errEl.textContent = '';
+      selectEl.disabled = true;
+      google.script.run.withSuccessHandler(function (result) {
+        selectEl.disabled = false;
+        if (!result.ok) {
+          errEl.textContent = result.message;
+          return;
+        }
+        if (newStatus === 'Done') {
+          document.getElementById('row-' + rowId).classList.add('is-done');
+        } else {
+          document.getElementById('row-' + rowId).classList.remove('is-done');
+        }
+      }).withFailureHandler(function (err) {
+        selectEl.disabled = false;
+        errEl.textContent = 'Write failed: ' + err.message;
+      }).updateTaskStatus(sheetKey, phase, task, newStatus);
+    }
+
+    function markDone(btn, sheetKey, phase, task) {
+      var rowId = rowKey(sheetKey, phase, task);
+      var errEl = document.getElementById('err-' + rowId);
+      errEl.textContent = '';
+      btn.disabled = true;
+      google.script.run.withSuccessHandler(function (result) {
+        btn.disabled = false;
+        if (!result.ok) { errEl.textContent = result.message; return; }
+        var row = document.getElementById('row-' + rowId);
+        row.classList.add('is-done');
+        if (!showDone[sheetKey]) row.style.display = 'none';
+        btn.textContent = 'Done';
+      }).withFailureHandler(function (err) {
+        btn.disabled = false;
+        errEl.textContent = 'Write failed: ' + err.message;
+      }).markDone(sheetKey, phase, task);
+    }
+
+    load();
+  </script>
+</body>
+</html>

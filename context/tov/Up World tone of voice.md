@@ -1,0 +1,1 @@
+Hii Ali! How are ya? I saw you applied for The Marketing Accelerator and we're relaunching on 30th September! I know you applied a while ago so I'm checking if you're still keen? Would love to invite you to the next stage xx
