@@ -28,10 +28,9 @@ folder is now a working scratchpad, not the source of truth — GitHub is.
   files above), `marketing/`.
 
 ## Read first (every task in this folder)
-1. `../_me/` — how Liv works and wants to be coached (always, per root CLAUDE.md)
-2. `context/tov/_spine.md` — hard writing rules shared by every voice
-3. The right voice doc (below) + `context/` (brand, how-to, strategy, audience) as relevant
-4. The relevant product folder: `up-club/` or `courses/<course>/`
+1. `context/tov/_spine.md` — hard writing rules shared by every voice
+2. The right voice doc (below) + `context/` (brand, how-to, strategy, audience) as relevant
+3. The relevant product folder: `up-club/` or `courses/<course>/`
 
 ## Structure
 - `context/` — shared brains for everything that's genuinely cross-product: `tov/` (voice
