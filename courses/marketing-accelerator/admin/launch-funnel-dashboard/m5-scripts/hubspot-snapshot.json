@@ -1,0 +1,66 @@
+{
+  "fetchedAt": "2026-08-25T00:00:00.000Z",
+  "cohortFilter": "pipeline 888214769, dealstage 1251313898 (Paid), createdate >= 2026-07-27",
+  "note": "Regenerate via the HubSpot API key at ~/.hubspot_key — search deals in pipeline 888214769 with dealstage 1251313898, then pull each deal's associated contact for name/company/jobtitle. This list only drives the names/company/amount panel; the KPI count comes from the Funnel Tracker's TOTALS-so-far Paid actual instead, so add a deal here only once it's confirmed in the sheet — don't get ahead of it.",
+  "paidDeals": [
+    {
+      "name": "Sarah Sinclair",
+      "jobtitle": "Marketing Manager",
+      "company": "Brewser",
+      "amount": 1490
+    },
+    {
+      "name": "Simon Edholm",
+      "jobtitle": "Senior CRM Manager",
+      "company": "HeliosX",
+      "amount": 1490
+    },
+    {
+      "name": "Grace Bowler",
+      "jobtitle": "Head of Marketing",
+      "company": "Hambledon Wine Estate",
+      "amount": 1490
+    },
+    {
+      "name": "Ariella Bloom",
+      "jobtitle": "Brand Manager",
+      "company": "Piccolo",
+      "amount": 1490
+    },
+    {
+      "name": "Danielle Schoop",
+      "jobtitle": "Brand Lead",
+      "company": "Bloom & Wild",
+      "amount": 0,
+      "nonRevenue": true,
+      "amountFlag": "Rejoining from a previous cohort after having to drop out ill — a goodwill re-enrolment. Confirmed by Liv 25 Aug 2026: split out of the Paid target, revenue only."
+    },
+    {
+      "name": "Stephanie Ruff",
+      "jobtitle": "Senior Marketing Manager",
+      "company": "Avery Dennison",
+      "amount": 1490
+    },
+    {
+      "name": "Robert Warman",
+      "jobtitle": "Marketing and Business Development Manager",
+      "company": "Quirepace Ltd",
+      "amount": 1490
+    },
+    {
+      "name": "Clare Harrington",
+      "jobtitle": "Brand Manager",
+      "company": "Hello Sunday",
+      "amount": 1490
+    },
+    {
+      "name": "Shannon Osborne",
+      "jobtitle": "Team",
+      "company": "Up World",
+      "amount": 0,
+      "nonRevenue": true,
+      "amountFlag": "Team/free place, confirmed by Liv 8 Sept 2026 — split out of the Paid target, revenue only."
+    }
+  ],
+  "currency": "GBP"
+}

@@ -1,0 +1,136 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Brand Manager Bootcamp 2026//EN
+X-WR-CALNAME:BMBC 2026
+X-WR-TIMEZONE:Europe/London
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:bmbc2026-event01@up-world.co
+DTSTART;TZID=Europe/London:20260903T130000
+DTEND;TZID=Europe/London:20260903T140000
+SUMMARY:BMBC 2026 — Module 1: What is a Brand — Lecture
+DESCRIPTION:Brand Manager Bootcamp 2026 — Lecture\nDelivered by Lottie Unwin\nPodcast guest: Lizzie S, Head of Marketing at TOTM
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event02@up-world.co
+DTSTART;TZID=Europe/London:20260910T130000
+DTEND;TZID=Europe/London:20260910T140000
+SUMMARY:BMBC 2026 — Module 1: What is a Brand — Technical Deep Dive: CRM
+DESCRIPTION:Brand Manager Bootcamp 2026 — Technical Deep Dive\nDelivered by Brand Hackers\nBrand Hackers clinic: CRM
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event03@up-world.co
+DTSTART;TZID=Europe/London:20260915T130000
+DTEND;TZID=Europe/London:20260915T140000
+SUMMARY:BMBC 2026 — Module 2: Brand Strategy — Group Case Study Workshop
+DESCRIPTION:Brand Manager Bootcamp 2026 — Workshop\nGroup Case Study Workshop
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event04@up-world.co
+DTSTART;TZID=Europe/London:20260917T130000
+DTEND;TZID=Europe/London:20260917T140000
+SUMMARY:BMBC 2026 — Module 2: Brand Strategy — Lecture
+DESCRIPTION:Brand Manager Bootcamp 2026 — Lecture\nDelivered by Lottie Unwin
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event05@up-world.co
+DTSTART;TZID=Europe/London:20260924T130000
+DTEND;TZID=Europe/London:20260924T140000
+SUMMARY:BMBC 2026 — Module 3: Marketing Strategy & Planning — Lecture
+DESCRIPTION:Brand Manager Bootcamp 2026 — Lecture\nDelivered by Lottie Unwin
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event06@up-world.co
+DTSTART;TZID=Europe/London:20261001T130000
+DTEND;TZID=Europe/London:20261001T140000
+SUMMARY:BMBC 2026 — Module 3: Marketing Strategy & Planning — Technical Deep Dive: Socials
+DESCRIPTION:Brand Manager Bootcamp 2026 — Technical Deep Dive\nDelivered by Brand Hackers\nBrand Hackers clinic: Socials
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event07@up-world.co
+DTSTART;TZID=Europe/London:20261006T130000
+DTEND;TZID=Europe/London:20261006T140000
+SUMMARY:BMBC 2026 — Module 4: Ways of Working — Group Case Study Workshop
+DESCRIPTION:Brand Manager Bootcamp 2026 — Workshop\nGroup Case Study Workshop
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event08@up-world.co
+DTSTART;TZID=Europe/London:20261008T130000
+DTEND;TZID=Europe/London:20261008T140000
+SUMMARY:BMBC 2026 — Module 4: Ways of Working — Lecture
+DESCRIPTION:Brand Manager Bootcamp 2026 — Lecture\nDelivered by Lottie Unwin
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event09@up-world.co
+DTSTART;TZID=Europe/London:20261015T130000
+DTEND;TZID=Europe/London:20261015T140000
+SUMMARY:BMBC 2026 — Module 5: Briefing & Creative — Lecture
+DESCRIPTION:Brand Manager Bootcamp 2026 — Lecture\nDelivered by Lottie Unwin
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event10@up-world.co
+DTSTART;TZID=Europe/London:20261022T130000
+DTEND;TZID=Europe/London:20261022T140000
+SUMMARY:BMBC 2026 — Module 5: Briefing & Creative — Technical Deep Dive: Paid Ads
+DESCRIPTION:Brand Manager Bootcamp 2026 — Technical Deep Dive\nDelivered by Brand Hackers\nBrand Hackers clinic: Paid Ads\nPodcast guest: David Frymann
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event11@up-world.co
+DTSTART;TZID=Europe/London:20261027T130000
+DTEND;TZID=Europe/London:20261027T140000
+SUMMARY:BMBC 2026 — Module 6: Marketing Channel — Group Case Study Workshop
+DESCRIPTION:Brand Manager Bootcamp 2026 — Workshop\nGroup Case Study Workshop
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event12@up-world.co
+DTSTART;TZID=Europe/London:20261029T130000
+DTEND;TZID=Europe/London:20261029T140000
+SUMMARY:BMBC 2026 — Module 6: Marketing Channel — Lecture
+DESCRIPTION:Brand Manager Bootcamp 2026 — Lecture\nDelivered by Lottie Unwin
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event13@up-world.co
+DTSTART;TZID=Europe/London:20261105T130000
+DTEND;TZID=Europe/London:20261105T140000
+SUMMARY:BMBC 2026 — Module 7: Your Career — Lecture
+DESCRIPTION:Brand Manager Bootcamp 2026 — Lecture\nDelivered by Lottie Unwin
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event14@up-world.co
+DTSTART;TZID=Europe/London:20261112T130000
+DTEND;TZID=Europe/London:20261112T140000
+SUMMARY:BMBC 2026 — Module 7: Your Career — Technical Deep Dive: Trade Marketing
+DESCRIPTION:Brand Manager Bootcamp 2026 — Technical Deep Dive\nDelivered by Brand Hackers\nBrand Hackers clinic: Trade Marketing
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event15@up-world.co
+DTSTART;TZID=Europe/London:20261117T130000
+DTEND;TZID=Europe/London:20261117T140000
+SUMMARY:BMBC 2026 — Module 8: Measurement & What Comes Next — Group Case Study Workshop
+DESCRIPTION:Brand Manager Bootcamp 2026 — Workshop\nGroup Case Study Workshop
+LOCATION:TBC
+END:VEVENT
+BEGIN:VEVENT
+UID:bmbc2026-event16@up-world.co
+DTSTART;TZID=Europe/London:20261119T130000
+DTEND;TZID=Europe/London:20261119T140000
+SUMMARY:BMBC 2026 — Module 8: Measurement & What Comes Next — Lecture
+DESCRIPTION:Brand Manager Bootcamp 2026 — Lecture\nDelivered by Lottie Unwin
+LOCATION:TBC
+END:VEVENT
+END:VCALENDAR

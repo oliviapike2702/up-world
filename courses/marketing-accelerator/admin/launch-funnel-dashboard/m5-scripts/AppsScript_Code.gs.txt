@@ -1,0 +1,528 @@
+// TMA Launch Funnel Dashboard — Apps Script version of m5-scripts/generate-dashboard.js
+//
+// Runs bound to "TMA Launch Funnel Tracker" as YOU (Liv), so no service account or API key
+// needed for the Sheet read — that's the whole point of building it this way.
+//
+// SETUP (one-time):
+// 1. Open the Sheet: https://docs.google.com/spreadsheets/d/1YAbXlqY6nLFV15XBhQIx20LM0CUspe6GuQJPAvVUWNE/edit
+// 2. Extensions -> Apps Script. Delete the default empty Code.gs content.
+// 3. Paste THIS file's content into Code.gs.
+// 4. Click the "+" next to Files -> Script -> name it "Assets" -> paste the content of
+//    AppsScript_Assets.gs.txt into it. (Kept separate because it's ~78KB of embedded font/logo
+//    data — splitting it out keeps Code.gs readable.)
+// 5. Deploy -> New deployment -> type "Web app" -> Execute as "Me" -> Who has access "Only
+//    myself" (or "Anyone within Up World" if you want Nzola/Jonny/Lottie to open the same
+//    link without you sharing your login) -> Deploy. Copy the web app URL it gives you.
+// 6. Open that URL any time to see the dashboard — it reads the Sheet live on every load,
+//    genuinely auto-refreshing, unlike the static HTML snapshot.
+//
+// KNOWN GAP vs the HTML version: HubSpot data (paid applicants' name/company/role + revenue)
+// isn't wired in here — Apps Script can't hold the HubSpot API key securely the way the Node
+// scripts do (~/.hubspot_key). The PAID_DEALS constant below is a manually-updated placeholder;
+// ask Claude to re-pull it from HubSpot (deals in pipeline 888214769, stage 1251313898 Paid,
+// with each deal's associated contact) and paste the refreshed array in when you want that
+// panel current. It only drives the names/company/amount list — the KPI count and funnel bar
+// always come from the Sheet-summed Paid actual, so this being stale never desyncs those.
+
+var SHEET_ID = '1YAbXlqY6nLFV15XBhQIx20LM0CUspe6GuQJPAvVUWNE';
+var TAB1 = 'Untitled'; // weekly tracker — M3 named it this; rename in the Sheet + here together if you rename it
+var TAB2 = 'Application detail';
+var PAID_GOAL = 25;
+
+// Manually-refreshed HubSpot snapshot (see KNOWN GAP above). Ask Claude to update this array
+// with real paid deals (name, jobtitle, company, amount) when you want it current.
+var PAID_DEALS = [
+  { name: 'Sarah Sinclair', jobtitle: 'Head of Marketing', company: 'Brewser', amount: 1490 }
+];
+var CURRENCY_SYMBOL = '£';
+
+var COLS = {
+  weekLabel: 2, phase: 3,
+  websiteActual: 4, websiteTarget: 5,
+  typeformActual: 6, typeformTarget: 7,
+  startsActual: 8, startsTarget: 9,
+  applicantsActual: 10, applicantsTarget: 11,
+  bookedActual: 12,
+  acceptedActual: 13, acceptedTarget: 14,
+  paidActual: 15, paidTargetWeekly: 16, paidCumTarget: 17, paidCumPct: 18,
+};
+
+function doGet(e) {
+  var html = buildDashboardHtml();
+  return HtmlService.createHtmlOutput(html)
+    .setTitle('The Marketing Accelerator Sept 2026 — launch funnel')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+function num(v) {
+  if (v === undefined || v === null || v === '') return null;
+  var n = Number(v);
+  return isNaN(n) ? null : n;
+}
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function fmt(n, opts) {
+  opts = opts || {};
+  if (n === null) return opts.blank || 'no data';
+  if (opts.pct) return n.toFixed(0) + '%';
+  return Math.round(n).toLocaleString('en-GB');
+}
+
+// Parses "w/c 20 Jul 2026" into a Date (the Monday that week starts).
+function parseWeekLabel(label) {
+  if (!label) return null;
+  var m = /w\/c\s+(\d+)\s+(\w+)\s+(\d{4})/.exec(label);
+  if (!m) return null;
+  var months = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+  return new Date(Number(m[3]), months[m[2]], Number(m[1]));
+}
+
+function buildDashboardHtml() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet1 = ss.getSheetByName(TAB1);
+  var sheet2 = ss.getSheetByName(TAB2);
+
+  // Read generously wide — the Sheet's row count isn't assumed fixed (it has already grown once
+  // when the window was extended from 8 to 9 weeks). Find HEADER and WINDOW TOTAL by content,
+  // not by hardcoded row number, so this can't silently break again if rows are added/removed.
+  var tab1Full = sheet1.getRange(1, 1, sheet1.getLastRow(), 19).getValues();
+  var tab2Rows = sheet2.getLastRow();
+  var tab2 = tab2Rows > 0 ? sheet2.getRange(1, 1, tab2Rows, 8).getValues() : [[]];
+
+  var caveat = (tab1Full[0] && tab1Full[0][0]) ? tab1Full[0][0] : null;
+  var legend = (tab1Full[1] && tab1Full[1][0]) ? tab1Full[1][0] : null;
+
+  var headerRowIndex = -1, totalRowIndex = -1;
+  for (var hi = 0; hi < tab1Full.length; hi++) {
+    var c0 = (tab1Full[hi][0] || '').toString();
+    var c2 = (tab1Full[hi][2] || '').toString();
+    if (headerRowIndex === -1 && c0 === 'launch_id') headerRowIndex = hi;
+    if (c2.indexOf('WINDOW TOTAL') !== -1) { totalRowIndex = hi; break; } // stop at first match — anything after is launch config, not week data
+  }
+  if (headerRowIndex === -1 || totalRowIndex === -1) {
+    throw new Error('Could not find the header row ("launch_id") or the "WINDOW TOTAL" row in the Sheet — its layout may have changed. Check Untitled!A1:S30 by hand before trusting this dashboard.');
+  }
+  var weekRows = tab1Full.slice(headerRowIndex + 1, totalRowIndex);
+  var totalRow = tab1Full[totalRowIndex] || [];
+
+  function sumActual(colIdx) {
+    var sum = 0, anyData = false;
+    for (var i = 0; i < weekRows.length; i++) {
+      var v = num(weekRows[i][colIdx]);
+      if (v !== null) { sum += v; anyData = true; }
+    }
+    return anyData ? sum : null;
+  }
+
+  var stages = [
+    { key: 'website', label: 'Website views', actual: sumActual(COLS.websiteActual), target: num(totalRow[5]) },
+    { key: 'typeform_views', label: 'Typeform views', actual: sumActual(COLS.typeformActual), target: num(totalRow[7]) },
+    { key: 'form_starts', label: 'Form starts', actual: sumActual(COLS.startsActual), target: num(totalRow[9]) },
+    { key: 'applicants', label: 'Applicants', actual: sumActual(COLS.applicantsActual), target: num(totalRow[11]) },
+    { key: 'booked_calls', label: 'Booked calls', actual: sumActual(COLS.bookedActual), target: null },
+    { key: 'accepted', label: 'Accepted', actual: sumActual(COLS.acceptedActual), target: num(totalRow[14]) },
+    { key: 'paid', label: 'Paid', actual: sumActual(COLS.paidActual), target: num(totalRow[17]) },
+  ];
+
+  var anyRealActivity = stages.some(function (s) { return s.actual !== null && s.actual > 0; });
+  var anyActualDataAtAll = stages.some(function (s) { return s.actual !== null; });
+
+  for (var i = 1; i < stages.length; i++) {
+    var prev = stages[i - 1], cur = stages[i];
+    cur.conversion = (prev.actual !== null && cur.actual !== null && prev.actual > 0)
+      ? (cur.actual / prev.actual) * 100 : null;
+    cur.targetConversion = (prev.target !== null && cur.target !== null && prev.target > 0)
+      ? (cur.target / prev.target) * 100 : null;
+  }
+  stages[0].conversion = null;
+  stages[0].targetConversion = null;
+
+  stages.forEach(function (s) {
+    if (s.target === null) { s.rag = 'no-target'; }
+    else if (s.actual === null || (s.actual === 0 && !anyRealActivity)) { s.rag = 'not-started'; }
+    else {
+      var ratio = s.actual / s.target;
+      if (ratio >= 0.9) s.rag = 'green';
+      else if (ratio >= 0.6) s.rag = 'amber';
+      else s.rag = 'red';
+    }
+  });
+
+  // paidDeals only drives the name/company/amount list below — the count everyone sees (KPI
+  // card, funnel bar) comes from the Sheet-summed stages.paid.actual instead, since that's kept
+  // current by the weekly automation while PAID_DEALS is a hand-updated snapshot that lags it.
+  var paidDeals = PAID_DEALS;
+  var revenueTotal = paidDeals.reduce(function (sum, d) { return sum + (Number(d.amount) || 0); }, 0);
+  var paidActualCount = stages.find(function (s) { return s.key === 'paid'; }).actual || 0;
+
+  // A week "has data" if any of its own ACTUAL columns are filled in — not just Paid, since a
+  // week can have applicants/views before any payment lands.
+  var ACTUAL_COL_LIST = [COLS.websiteActual, COLS.typeformActual, COLS.startsActual, COLS.applicantsActual, COLS.bookedActual, COLS.acceptedActual, COLS.paidActual];
+  function rowHasAnyActual(row) {
+    for (var k = 0; k < ACTUAL_COL_LIST.length; k++) {
+      if (num(row[ACTUAL_COL_LIST[k]]) !== null) return true;
+    }
+    return false;
+  }
+
+  var today = new Date();
+  var thisWeekRow = null, thisWeekIndex = -1, thisWeekIsFuture = false, usingPriorWeek = false;
+  for (var w = 0; w < weekRows.length; w++) {
+    var start = parseWeekLabel(weekRows[w][COLS.weekLabel]);
+    var nextStart = (w + 1 < weekRows.length) ? parseWeekLabel(weekRows[w + 1][COLS.weekLabel]) : null;
+    if (start && today >= start && (!nextStart || today < nextStart)) {
+      thisWeekRow = weekRows[w];
+      thisWeekIndex = w;
+      break;
+    }
+  }
+  // The calendar-current week is often genuinely empty (it just started) — if so, fall back to
+  // the most recent PRIOR week that actually has real numbers, so "This week" isn't just blank
+  // on a Monday morning. Only steps backward, never forward into a week that hasn't happened.
+  if (thisWeekRow && !rowHasAnyActual(thisWeekRow)) {
+    for (var back = thisWeekIndex - 1; back >= 0; back--) {
+      if (rowHasAnyActual(weekRows[back])) {
+        thisWeekRow = weekRows[back];
+        thisWeekIndex = back;
+        usingPriorWeek = true;
+        break;
+      }
+    }
+  }
+  if (!thisWeekRow) {
+    // Find the first row that actually has a parseable week label — leading rows may be blank
+    // (e.g. weeks before the window's real start date got cleared out).
+    var firstRealIndex = -1;
+    for (var fi = 0; fi < weekRows.length; fi++) {
+      if (parseWeekLabel(weekRows[fi][COLS.weekLabel]) !== null) { firstRealIndex = fi; break; }
+    }
+    if (firstRealIndex !== -1) {
+      var firstStart = parseWeekLabel(weekRows[firstRealIndex][COLS.weekLabel]);
+      if (today < firstStart) { thisWeekRow = weekRows[firstRealIndex]; thisWeekIndex = firstRealIndex; thisWeekIsFuture = true; }
+    }
+  }
+
+  // Pace badge for "This week" — the only stage with a genuine weekly (not window-total)
+  // target is Paid, so this compares cumulative paid actual-to-date against the pacing
+  // curve's cumulative target-to-date, per M2's back-loaded curve.
+  var paceRag = null, paceLabel = '';
+  if (thisWeekRow && !thisWeekIsFuture) {
+    var cumActual = 0, anyPaidDataToDate = false;
+    for (var pi = 0; pi <= thisWeekIndex; pi++) {
+      var pv = num(weekRows[pi][COLS.paidActual]);
+      if (pv !== null) { cumActual += pv; anyPaidDataToDate = true; }
+    }
+    var cumTarget = num(thisWeekRow[COLS.paidCumTarget]);
+    if (!anyPaidDataToDate) {
+      paceRag = 'not-started'; paceLabel = 'Not started yet';
+    } else if (cumTarget === null || cumTarget === 0) {
+      paceRag = cumActual > 0 ? 'green' : 'not-started';
+      paceLabel = cumActual > 0 ? 'Ahead of pace' : 'Not started yet';
+    } else {
+      var paceRatio = cumActual / cumTarget;
+      var pctLabel = fmt(paceRatio * 100, { pct: true });
+      if (paceRatio >= 0.9) { paceRag = 'green'; paceLabel = 'On track — ' + pctLabel + ' of pace'; }
+      else if (paceRatio >= 0.6) { paceRag = 'amber'; paceLabel = 'At risk — ' + pctLabel + ' of pace'; }
+      else { paceRag = 'red'; paceLabel = 'Off track — ' + pctLabel + ' of pace'; }
+    }
+  }
+
+  // Window label — derived from the actual first/last week rows with a real date, not
+  // hardcoded, since these dates have already shifted once.
+  var realWeekRows = weekRows.filter(function (row) { return parseWeekLabel(row[COLS.weekLabel]) !== null; });
+  function shortDate(label) {
+    var m = /w\/c\s+(\d+)\s+(\w+)\s+(\d{4})/.exec(label || '');
+    return m ? (m[1] + ' ' + m[2]) : (label || '?');
+  }
+  var windowLabel = realWeekRows.length
+    ? (shortDate(realWeekRows[0][COLS.weekLabel]) + ' – ' + shortDate(realWeekRows[realWeekRows.length - 1][COLS.weekLabel]))
+    : '?';
+
+  var wins = [], flags = [];
+  if (anyRealActivity) {
+    stages.forEach(function (s) {
+      if (s.rag === 'green') wins.push(s.label + ' is on track — ' + fmt(s.actual) + ' vs ' + fmt(s.target) + ' target.');
+      if (s.rag === 'red') flags.push(s.label + ' is behind pace — ' + fmt(s.actual) + ' vs ' + fmt(s.target) + ' target.');
+    });
+    var measured = stages.filter(function (s) { return s.conversion !== null; });
+    if (measured.length) {
+      var worst = measured.reduce(function (a, b) { return a.conversion < b.conversion ? a : b; });
+      flags.push('Biggest drop-off: only ' + fmt(worst.conversion, { pct: true }) + ' convert into ' + worst.label.toLowerCase() + '.');
+      var best = measured.reduce(function (a, b) { return a.conversion > b.conversion ? a : b; });
+      if (best.key !== worst.key) wins.push(fmt(best.conversion, { pct: true }) + ' convert into ' + best.label.toLowerCase() + ' — the strongest step in the funnel right now.');
+    }
+  }
+  if (revenueTotal > 0) {
+    wins.push(CURRENCY_SYMBOL + revenueTotal.toLocaleString('en-GB') + ' banked so far from ' + paidDeals.length + ' paid space' + (paidDeals.length === 1 ? '' : 's') + '.');
+  }
+  if (!wins.length) wins.push('Nothing to report yet — the selling window opens 3 Aug 2026.');
+  if (!flags.length) flags.push('No flags yet — check back once the window opens.');
+
+  var applicantHeaderRow = tab2[0] || [];
+  var applicantRows = tab2.slice(1).filter(function (r) {
+    return r.some(function (c) { return (c || '').toString().trim() !== ''; });
+  });
+
+  var generatedAt = new Date().toISOString();
+  var figtreeCss = FIGTREE_CSS();
+  var roundelNavy = ROUNDEL_LOGO_DATAURI();
+
+  function ragLabel(rag) {
+    return { green: 'On track', amber: 'Watch', red: 'Behind', 'not-started': 'Not started yet', 'no-target': 'No target set' }[rag];
+  }
+
+  var MIN_WIDTH_PCT = 12;
+  function scaledWidthPct(value, maxValue) {
+    if (value === null || !maxValue) return 0;
+    var raw = Math.sqrt(value / maxValue) * 100;
+    return Math.max(MIN_WIDTH_PCT, Math.min(100, raw));
+  }
+
+  var maxTarget = Math.max.apply(null, stages.filter(function (s) { return s.target !== null; }).map(function (s) { return s.target; }));
+
+  function funnelBar(stage) {
+    var target = stage.target, actual = stage.actual;
+    var targetPctWidth = target !== null ? scaledWidthPct(target, maxTarget) : 0;
+    var actualPctWidth = (target !== null && actual !== null) ? Math.min(100, (actual / target) * 100) : 0;
+    var targetConvHtml = stage.targetConversion !== null
+      ? ('<span class="conv-target">target ' + fmt(stage.targetConversion, { pct: true }) + '</span>') : '';
+    var conversionHtml = stage.key === 'website' ? '' : (
+      '<div class="conv-badge-row">' +
+        (stage.conversion !== null
+          ? ('<span class="conv-actual">' + fmt(stage.conversion, { pct: true }) + ' conversion</span>')
+          : '<span class="conv-actual conv-actual--muted">conversion not yet measurable</span>') +
+        targetConvHtml +
+      '</div>');
+
+    return '' +
+      '<div class="funnel-stage">' +
+        conversionHtml +
+        '<div class="stage-row">' +
+          '<div class="stage-label">' + esc(stage.label) + '</div>' +
+          '<div class="stage-status status--' + stage.rag + '">' + ragLabel(stage.rag) + '</div>' +
+        '</div>' +
+        '<div class="bar-track">' +
+          (target !== null ? '<div class="bar-ghost" style="width:' + targetPctWidth + '%"></div>' : '') +
+          ((target !== null && actual !== null) ? '<div class="bar-actual" style="width:' + ((actualPctWidth * targetPctWidth) / 100) + '%"></div>' : '') +
+        '</div>' +
+        '<div class="stage-figures">' +
+          '<span class="fig-actual">' + (stage.actual === null ? 'no data yet' : fmt(stage.actual)) + ' actual</span>' +
+          '<span class="fig-target">' + (target === null ? 'no target set' : ('vs ' + fmt(target) + ' target (window total)')) + '</span>' +
+        '</div>' +
+      '</div>';
+  }
+
+  var applicantSection = applicantRows.length === 0
+    ? '<div class="empty-state"><div class="empty-title">No applicants yet</div>' +
+      '<p>The Marketing Accelerator Sept 2026 Typeform form has had zero responses so far — this is expected, ' +
+      'the selling window hasn\'t opened. This section will populate automatically once the ' +
+      '"Application detail" tab has real rows in it.</p></div>'
+    : '<table class="data-table"><thead><tr>' +
+        applicantHeaderRow.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') +
+      '</tr></thead><tbody>' +
+        applicantRows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') +
+      '</tbody></table>';
+
+  var paidApplicantsSection = paidDeals.length === 0
+    ? '<div class="empty-state empty-state--small"><div class="empty-title">No one\'s paid yet</div>' +
+      '<p>The first names on the board will show up here the moment a deal hits the HubSpot ' +
+      '"Paid" stage for this cohort.</p></div>'
+    : '<ul class="paid-list">' + paidDeals.map(function (d) {
+        return '<li class="paid-card"><div class="paid-name">' + esc(d.name) + '</div>' +
+          '<div class="paid-meta">' + esc(d.jobtitle || '') + (d.jobtitle && d.company ? ' · ' : '') + esc(d.company || '') + '</div>' +
+          '<div class="paid-amount">' + CURRENCY_SYMBOL + Number(d.amount || 0).toLocaleString('en-GB') + '</div></li>';
+      }).join('') + '</ul>';
+
+  // "This week" chips: actual, % against THAT WEEK's target (not window total), and the
+  // conversion from the previous stage's actual this same week.
+  function weekChipRag(actual, target) {
+    if (target === null) return 'no-target';
+    if (actual === null) return 'not-started';
+    if (target === 0) return actual > 0 ? 'green' : 'not-started';
+    var ratio = actual / target;
+    if (ratio >= 0.9) return 'green';
+    if (ratio >= 0.6) return 'amber';
+    return 'red';
+  }
+
+  var weekChipDefs = [];
+  if (thisWeekRow) {
+    var chipConfigs = [
+      { label: 'Website views', actualIdx: COLS.websiteActual, targetIdx: COLS.websiteTarget },
+      { label: 'Typeform views', actualIdx: COLS.typeformActual, targetIdx: COLS.typeformTarget },
+      { label: 'Form starts', actualIdx: COLS.startsActual, targetIdx: COLS.startsTarget },
+      { label: 'Applicants', actualIdx: COLS.applicantsActual, targetIdx: COLS.applicantsTarget },
+      { label: 'Booked calls', actualIdx: COLS.bookedActual, targetIdx: null },
+      { label: 'Accepted', actualIdx: COLS.acceptedActual, targetIdx: COLS.acceptedTarget },
+      { label: 'Paid', actualIdx: COLS.paidActual, targetIdx: COLS.paidTargetWeekly },
+    ];
+    for (var ci = 0; ci < chipConfigs.length; ci++) {
+      var def = chipConfigs[ci];
+      var actual = num(thisWeekRow[def.actualIdx]);
+      var target = def.targetIdx === null ? null : num(thisWeekRow[def.targetIdx]);
+      var prevActual = ci === 0 ? null : num(thisWeekRow[chipConfigs[ci - 1].actualIdx]);
+      var conversion = (prevActual !== null && actual !== null && prevActual > 0) ? (actual / prevActual) * 100 : null;
+      var prevTargetIdx = ci === 0 ? null : chipConfigs[ci - 1].targetIdx;
+      var prevTarget = (prevTargetIdx === null) ? null : num(thisWeekRow[prevTargetIdx]);
+      var targetConversion = (prevTarget !== null && target !== null && prevTarget > 0) ? (target / prevTarget) * 100 : null;
+      weekChipDefs.push({ label: def.label, actual: actual, target: target, conversion: conversion, targetConversion: targetConversion, rag: weekChipRag(actual, target) });
+    }
+  }
+
+  var thisWeekSection = !thisWeekRow ? '' : (
+    '<div class="section"><h2>' + (usingPriorWeek ? 'Last week' : 'This week') + '</h2>' +
+    '<p class="section-note">' + (thisWeekIsFuture
+      ? ('The window opens ' + esc(thisWeekRow[COLS.weekLabel]) + ' — nothing to show yet.')
+      : (esc(thisWeekRow[COLS.weekLabel]) + ' (' + esc(thisWeekRow[COLS.phase] || '') + ')' + (usingPriorWeek ? ' — this week has no data yet, showing the last completed week' : ''))) + '</p>' +
+    (paceRag ? ('<div class="pace-badge pace-badge--' + paceRag + '">' + esc(paceLabel) + '<span class="pace-sub">paid vs pacing curve to date</span></div>') : '') +
+    '<div class="week-chip-row">' +
+      weekChipDefs.map(function (c) {
+        var pctText;
+        if (c.target === null) pctText = 'no target';
+        else if (c.actual === null) pctText = '— of week target';
+        else {
+          var pctVal = c.target ? (c.actual / c.target) * 100 : (c.actual > 0 ? 100 : 0);
+          pctText = fmt(pctVal, { pct: true }) + ' of week target';
+        }
+        return '<div class="week-chip">' +
+          '<div class="week-chip-status status--' + c.rag + '"></div>' +
+          '<div class="week-chip-value">' + (c.actual === null ? '—' : fmt(c.actual)) + '</div>' +
+          '<div class="week-chip-label">' + esc(c.label) + '</div>' +
+          '<div class="week-chip-sub">' + pctText + '</div>' +
+          ((c.conversion !== null || c.targetConversion !== null) ? (
+            '<div class="week-chip-conv">' +
+              (c.conversion !== null ? (fmt(c.conversion, { pct: true }) + ' conv.') : 'conv. n/a') +
+              (c.targetConversion !== null ? (' <span class="week-chip-conv-target">(target ' + fmt(c.targetConversion, { pct: true }) + ')</span>') : '') +
+            '</div>'
+          ) : '') +
+        '</div>';
+      }).join('') +
+    '</div></div>'
+  );
+
+  var html = '<meta charset="UTF-8">' +
+'<style>' + figtreeCss + '\n' +
+':root { --pink: #E8536E; --navy: #16173D; --white: #FFFFFF; }\n' +
+'* { box-sizing: border-box; }\n' +
+'body { margin: 0; font-family: "Figtree", sans-serif; background: #FAFAF8; color: var(--navy); -webkit-font-smoothing: antialiased; }\n' +
+'@media (prefers-color-scheme: dark) { body { background: var(--navy); color: var(--white); } }\n' +
+'.wrap { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }\n' +
+'.header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }\n' +
+'.header img { width: 56px; height: 56px; flex-shrink: 0; }\n' +
+'.header h1 { font-weight: 800; font-size: 1.75rem; margin: 0 0 4px; letter-spacing: -0.01em; }\n' +
+'.header .sub { font-weight: 600; color: var(--pink); margin: 0; }\n' +
+'.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 28px; }\n' +
+'.kpi-card { background: var(--white); border-radius: 14px; padding: 16px 18px; border: 1px solid rgba(22,23,61,0.08); }\n' +
+'@media (prefers-color-scheme: dark) { .kpi-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); } }\n' +
+'.kpi-label { font-size: 0.78rem; font-weight: 600; opacity: 0.65; margin-bottom: 4px; }\n' +
+'.kpi-value { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.01em; }\n' +
+'.kpi-value .unit { font-size: 0.95rem; font-weight: 600; opacity: 0.6; margin-left: 3px; }\n' +
+'.callout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }\n' +
+'@media (max-width: 640px) { .callout-grid { grid-template-columns: 1fr; } }\n' +
+'.callout { border-radius: 14px; padding: 16px 18px; }\n' +
+'.callout-wins { background: rgba(30, 122, 74, 0.08); border: 1px solid rgba(30, 122, 74, 0.2); }\n' +
+'.callout-flags { background: rgba(232, 83, 110, 0.08); border: 1px solid rgba(232, 83, 110, 0.25); }\n' +
+'.callout-title { font-weight: 800; font-size: 0.95rem; margin-bottom: 8px; }\n' +
+'.callout-wins .callout-title { color: #1e7a4a; }\n' +
+'.callout-flags .callout-title { color: var(--pink); }\n' +
+'.callout ul { margin: 0; padding-left: 18px; font-size: 0.88rem; line-height: 1.55; }\n' +
+'.callout li { margin-bottom: 4px; }\n' +
+'.caveat-box { background: rgba(232, 83, 110, 0.06); border-left: 4px solid var(--pink); padding: 12px 16px; border-radius: 6px; font-size: 0.86rem; line-height: 1.5; margin-bottom: 10px; opacity: 0.9; }\n' +
+'.pace-badge { display: inline-flex; align-items: baseline; gap: 8px; font-weight: 800; font-size: 0.95rem; padding: 8px 16px; border-radius: 10px; margin-bottom: 14px; }\n' +
+'.pace-badge--green { background: rgba(30,122,74,0.12); color: #1e7a4a; }\n' +
+'.pace-badge--amber { background: rgba(201,138,26,0.14); color: #8a6110; }\n' +
+'.pace-badge--red { background: rgba(232,83,110,0.12); color: var(--pink); }\n' +
+'.pace-badge--not-started { background: rgba(22,23,61,0.06); color: var(--navy); opacity: 0.75; }\n' +
+'.pace-sub { font-weight: 500; font-size: 0.78rem; opacity: 0.75; }\n' +
+'h2 { font-weight: 800; font-size: 1.15rem; margin: 0 0 4px; position: relative; display: inline-block; }\n' +
+'h2::after { content: ""; position: absolute; left: 0; right: -6px; bottom: -4px; height: 4px; background: var(--pink); border-radius: 2px; transform: rotate(-0.6deg); }\n' +
+'.section-note { font-size: 0.85rem; opacity: 0.7; margin: 10px 0 18px; }\n' +
+'.section { margin-bottom: 40px; }\n' +
+'.two-col { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: start; }\n' +
+'@media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }\n' +
+'.funnel-stage { margin-bottom: 20px; }\n' +
+'.conv-badge-row { display: flex; gap: 8px; align-items: baseline; margin-bottom: 4px; flex-wrap: wrap; }\n' +
+'.conv-actual { font-size: 0.72rem; font-weight: 700; color: var(--pink); }\n' +
+'.conv-actual--muted { color: inherit; opacity: 0.5; font-weight: 500; }\n' +
+'.conv-target { font-size: 0.72rem; font-weight: 500; opacity: 0.55; }\n' +
+'.stage-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }\n' +
+'.stage-label { font-weight: 700; font-size: 0.95rem; }\n' +
+'.stage-status { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; }\n' +
+'.status--green { background: #1e7a4a; color: white; }\n' +
+'.status--amber { background: #c98a1a; color: white; }\n' +
+'.status--red { background: var(--pink); color: white; }\n' +
+'.status--not-started { background: rgba(22,23,61,0.1); color: var(--navy); }\n' +
+'.status--no-target { background: transparent; color: inherit; opacity: 0.55; border: 1px solid currentColor; }\n' +
+'.bar-track { position: relative; height: 16px; border-radius: 8px; background: rgba(22,23,61,0.06); overflow: hidden; }\n' +
+'.bar-ghost { position: absolute; top: 0; left: 0; bottom: 0; border: 2px dashed rgba(22,23,61,0.3); border-radius: 8px; background: transparent; }\n' +
+'.bar-actual { position: absolute; top: 0; left: 0; bottom: 0; background: var(--pink); border-radius: 8px; }\n' +
+'.stage-figures { display: flex; justify-content: space-between; font-size: 0.78rem; margin-top: 5px; opacity: 0.85; font-variant-numeric: tabular-nums; }\n' +
+'.fig-actual { font-weight: 700; }\n' +
+'.week-chip-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; }\n' +
+'.week-chip { position: relative; background: var(--white); border: 1px solid rgba(22,23,61,0.08); border-radius: 10px; padding: 10px 8px; text-align: center; }\n' +
+'.week-chip-status { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; }\n' +
+'.week-chip-status.status--green { background: #1e7a4a; }\n' +
+'.week-chip-status.status--amber { background: #c98a1a; }\n' +
+'.week-chip-status.status--red { background: var(--pink); }\n' +
+'.week-chip-status.status--not-started { background: rgba(22,23,61,0.25); }\n' +
+'.week-chip-status.status--no-target { background: transparent; border: 1px solid rgba(22,23,61,0.3); }\n' +
+'.week-chip-value { font-weight: 800; font-size: 1.05rem; }\n' +
+'.week-chip-label { font-size: 0.68rem; opacity: 0.65; margin-top: 2px; }\n' +
+'.week-chip-sub { font-size: 0.64rem; opacity: 0.55; margin-top: 4px; }\n' +
+'.week-chip-conv { font-size: 0.64rem; font-weight: 700; color: var(--pink); margin-top: 2px; }\n' +
+'.week-chip-conv-target { font-weight: 500; opacity: 0.7; color: inherit; }\n' +
+'.explainer { background: rgba(22,23,61,0.03); border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; font-size: 0.85rem; line-height: 1.6; }\n' +
+'.explainer strong { color: var(--pink); }\n' +
+'.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }\n' +
+'.data-table th, .data-table td { border: 1px solid rgba(22,23,61,0.12); padding: 6px 8px; text-align: left; }\n' +
+'.data-table th { background: var(--navy); color: white; font-weight: 700; }\n' +
+'.paid-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }\n' +
+'.paid-card { background: var(--white); border: 1px solid rgba(22,23,61,0.08); border-radius: 12px; padding: 12px 14px; }\n' +
+'.paid-name { font-weight: 700; font-size: 0.92rem; }\n' +
+'.paid-meta { font-size: 0.78rem; opacity: 0.7; margin: 2px 0 6px; }\n' +
+'.paid-amount { font-size: 0.85rem; font-weight: 700; color: var(--pink); }\n' +
+'.empty-state { border: 2px dashed rgba(22,23,61,0.22); border-radius: 12px; padding: 22px 18px; text-align: center; }\n' +
+'.empty-state--small { padding: 18px 14px; }\n' +
+'.empty-title { font-weight: 800; font-size: 1rem; margin-bottom: 6px; }\n' +
+'.empty-state p { font-size: 0.85rem; opacity: 0.75; max-width: 420px; margin: 0 auto; line-height: 1.5; }\n' +
+'footer { margin-top: 44px; font-size: 0.7rem; opacity: 0.55; border-top: 1px solid rgba(22,23,61,0.12); padding-top: 14px; }\n' +
+'</style>' +
+'<div class="wrap">' +
+  '<div class="header"><img src="' + roundelNavy + '" alt="Up World">' +
+    '<div><h1>The Marketing Accelerator — launch funnel</h1><p class="sub">Sept 2026 cohort</p></div>' +
+  '</div>' +
+  '<div class="explainer">' +
+    '<strong>How to read this page:</strong> <strong>Wins/Flags</strong> auto-summarise what\'s going well or needs attention — honestly neutral until there\'s real data. ' +
+    '<strong>This week</strong> shows this week\'s raw numbers, each one\'s own status dot (green/amber/red/grey) against that week\'s slice of the target, and the conversion rate from the stage before it. ' +
+    '<strong>Overall funnel</strong> is the whole selling window end-to-end (actual vs the full window target), with conversion between every stage. ' +
+    '<strong>Paid so far</strong> is who\'s actually committed, to celebrate. A blank cell always means "no data yet" — never zero.' +
+  '</div>' +
+  '<div class="kpi-row">' +
+    '<div class="kpi-card"><div class="kpi-label">Goal</div><div class="kpi-value">' + PAID_GOAL + '<span class="unit">paid spaces</span></div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Paid so far</div><div class="kpi-value">' + paidActualCount + '<span class="unit">of ' + PAID_GOAL + '</span></div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Revenue booked</div><div class="kpi-value">' + CURRENCY_SYMBOL + revenueTotal.toLocaleString('en-GB') + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Window</div><div class="kpi-value" style="font-size:1.05rem;">' + windowLabel + '</div></div>' +
+  '</div>' +
+  '<div class="callout-grid">' +
+    '<div class="callout callout-wins"><div class="callout-title">Wins</div><ul>' + wins.map(function (w) { return '<li>' + esc(w) + '</li>'; }).join('') + '</ul></div>' +
+    '<div class="callout callout-flags"><div class="callout-title">Flags</div><ul>' + flags.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul></div>' +
+  '</div>' +
+  (caveat ? '<div class="caveat-box">' + esc(caveat) + '</div>' : '') +
+  thisWeekSection +
+  '<div class="section"><div class="two-col">' +
+    '<div><h2>Overall funnel</h2><p class="section-note">Whole selling window (' + windowLabel + '), target 25 paid.' +
+      (anyActualDataAtAll ? ' Actual (pink, solid) vs target (outline).' : ' Nothing has started yet, so every stage below is genuinely at zero — shown as "not started" rather than a failing red status.') +
+      '</p><div class="funnel">' + stages.map(funnelBar).join('') + '</div></div>' +
+    '<div><h2>Paid so far</h2><p class="section-note">Who\'s in, to get excited about.</p>' + paidApplicantsSection + '</div>' +
+  '</div></div>' +
+  '<div class="section"><h2>Applicant detail</h2><p class="section-note">From the "Application detail" tab.</p>' + applicantSection + '</div>' +
+  '<footer>Generated ' + generatedAt + ' from a live read of this Sheet, on every page load. ' +
+    'Every number above traces directly to a live cell read at generation time; nothing here is invented.</footer>' +
+'</div>';
+
+  return html;
+}
