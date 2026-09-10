@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Up Club | Stop Googling "how to write a marketing strategy"</title>
+<meta name="description" content="Up Club is an exclusive community of startup marketers. Doors open 5 October, 100 places. Join the waitlist.">
+<meta property="og:title" content="Stop Googling &quot;how to write a marketing strategy&quot;">
+<meta property="og:description" content="An exclusive community of startup marketers who've all written one. Doors open 5 October.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="__LOGO__">
+<link rel="apple-touch-icon" href="__LOGO__">
+<!-- HubSpot forms. TWO different forms:
+       d8caabb9... = October waitlist  (hero + close)
+       b8d61b3a... = prize draw entry  (pop-up only)
+     Separate forms so prize entries can be told apart from waitlist sign-ups, which is
+     what the "you didn't win, doors open Thursday" email depends on.
+     Renders inside a cross-origin iframe, so the page cannot style it
+     or set hidden fields on it: styling is done in the HubSpot form editor, and
+     per-placement tracking needs separate forms. Only appears when served over http(s). -->
+<script src="https://js-eu1.hsforms.net/forms/embed/25655163.js" defer></script>
+<style>
+/*__FONT_CSS__*/
+
+/* Tokens measured from live up-world.co/for-marketers (6 Aug 2026):
+   Figtree ExtraBold headings #16173E, Arial body #212121, pill buttons #E8526E,
+   16px card radius, soft 0 0 50px ambient shadow, centred hero.
+   v3 adds colour bands, layout variety, a stats row and a logo wall. */
+
+:root{
+  color-scheme: only light;
+  --pink:#E8526E; --pink-dark:#D8455F; --pink-wash:#FDF7F8;
+  --navy:#16173E; --navy-soft:#252753;
+  --white:#FFFFFF; --cream:#FBF6F3;
+  --ink:#212121; --ink-soft:#5A5A62;
+  --hair:#E8E6E9; --ph:#EFECEE; --ph-line:#C9C2C7;
+  --shadow:0 0 50px rgba(0,0,0,.10);
+  --shadow-lift:0 18px 44px rgba(22,23,62,.16);
+  --text:700px; --wide:1080px; --hero:1180px;
+  --head:'Figtree','Trebuchet MS',system-ui,sans-serif;
+  --body:Arial,Helvetica,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+@media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+#join{scroll-margin-top:1.5rem}
+body{margin:0;background:var(--white);font-family:var(--body);
+  font-size:16px;line-height:1.6;color:var(--ink);-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+
+/* ---------- bands ---------- */
+.band{padding:clamp(3rem,6.5vw,5.5rem) 1.5rem}
+.band--tight{padding-top:clamp(2rem,4vw,3rem);padding-bottom:clamp(2rem,4vw,3rem)}
+/* tighten the gap between the logo banner and the hero */
+.marquee + .band{padding-top:clamp(1.6rem,3vw,2.9rem)}
+.in{max-width:var(--text);margin:0 auto;display:flex;flex-direction:column;gap:1.4rem}
+.in--wide{max-width:var(--wide)}
+.in--mid{text-align:center;align-items:center}
+.band--white{background:var(--white)}
+.band--cream{background:var(--cream)}
+.band--wash{background:var(--pink-wash)}
+.band--navy{background:var(--navy);color:#EFEFF4}
+.band--pink{background:var(--pink);color:var(--white)}
+.band--navy h2,.band--navy h3,.band--pink h2,.band--pink h3{color:var(--white)}
+.band--navy .kicker,.band--pink .kicker{color:var(--white)}
+.band--navy .soft{color:rgba(239,239,244,.75)}
+.band--pink .soft{color:rgba(255,255,255,.85)}
+
+/* ---------- type ---------- */
+h1,h2,h3{margin:0;font-family:var(--head);font-weight:800;color:var(--navy);text-wrap:balance}
+h1{font-size:clamp(2.05rem,1.3rem + 3.6vw,3.19rem);line-height:1.0;letter-spacing:-.01em}
+h2{font-size:clamp(1.65rem,1.25rem + 1.9vw,2.18rem);line-height:1.25}
+h3{font-size:clamp(1.05rem,1rem + .35vw,1.22rem);line-height:1.35}
+p{margin:0}
+.kicker{font-family:var(--head);font-weight:800;
+  font-size:clamp(1rem,.95rem + .35vw,1.19rem);line-height:1.4;color:var(--navy)}
+.lede{font-size:clamp(1rem,.97rem + .2vw,1.06rem);line-height:1.6}
+.soft{color:var(--ink-soft)}
+.small{font-size:.875rem;line-height:1.5}
+.eyebrow{font-family:var(--head);font-weight:800;font-size:.75rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--pink)}
+.band--navy .eyebrow,.band--pink .eyebrow{color:var(--white);opacity:.8}
+
+/* ---------- buttons ---------- */
+.btn{font-family:var(--head);font-weight:800;
+  font-size:clamp(1.05rem,1rem + .35vw,1.25rem);
+  color:var(--white);background:var(--pink);border:0;border-radius:999px;
+  padding:1.1rem 2.5rem;cursor:pointer;text-decoration:none;display:inline-block;
+  text-align:center;width:100%;max-width:400px;transition:background-color .15s ease}
+.btn:hover{background:var(--pink-dark)}
+.btn:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+.band--pink .btn{background:var(--navy)}
+.band--pink .btn:hover{background:var(--navy-soft)}
+.band--pink .btn:focus-visible{outline-color:var(--white)}
+.note{font-family:var(--head);font-weight:800;font-size:.92rem;color:var(--navy)}
+.note--big{font-size:1.02rem}
+.reassure{font-size:.82rem;color:var(--ink-soft);margin-top:-.35rem}
+.band--navy .reassure,.band--pink .reassure{color:rgba(255,255,255,.8)}
+.band--navy .note,.band--pink .note{color:var(--white)}
+
+/* ---------- form ---------- */
+.form{background:var(--white);border-radius:16px;box-shadow:var(--shadow);
+  padding:clamp(1.3rem,4vw,1.9rem);width:100%;max-width:500px;
+  display:flex;flex-direction:column;gap:.7rem;align-items:center}
+.band--navy .form,.band--pink .form{box-shadow:var(--shadow-lift)}
+.form__row{display:flex;gap:.7rem;width:100%;flex-wrap:wrap}
+.form__row>*{flex:1 1 8rem}
+.field{width:100%;font-family:var(--body);font-size:1rem;padding:.9rem 1rem;
+  color:var(--ink);background:var(--white);border:1.5px solid var(--hair);border-radius:10px}
+.field::placeholder{color:#9A949B}
+.field:focus-visible{outline:2px solid var(--pink);border-color:var(--pink)}
+.stub{font-family:var(--head);font-size:.66rem;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ph-line);border:1.5px dashed var(--ph-line);
+  border-radius:8px;padding:.4rem .6rem;text-align:center}
+
+/* ---------- STATS ROW ---------- */
+.stats{list-style:none;margin:0;padding:0;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:1.6rem 1rem;text-align:center}
+@media(min-width:720px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stats b{display:block;font-family:var(--head);font-weight:800;
+  font-size:clamp(2.1rem,1.4rem + 3vw,3rem);line-height:1;color:var(--white)}
+.stats span{display:block;margin-top:.5rem;font-size:.82rem;line-height:1.4;
+  color:rgba(255,255,255,.9)}
+.stats .todo b,.stats .todo span{opacity:.62}
+
+/* ---------- split row: image + text ---------- */
+.split{display:grid;gap:1.6rem;align-items:center}
+@media(min-width:760px){
+  .split{grid-template-columns:1fr 1fr;gap:2.5rem}
+  .split--flip .split__media{order:2}
+}
+.split__body{display:flex;flex-direction:column;gap:1rem}
+/* person links: bold, pink, underlined, per copy-learnings.md — plain links go unnoticed */
+.plink{color:var(--pink);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.plink:hover{color:var(--pink-dark)}
+.plink:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+
+/* closing section: photo + bullets on the left, form on the right */
+.closer{display:grid;gap:1.8rem;align-items:start;text-align:left}
+@media(min-width:860px){.closer{grid-template-columns:1fr 1fr;gap:2.5rem}}
+.closer__left{display:flex;flex-direction:column;gap:1.2rem}
+.closer__right{display:flex;justify-content:center}
+.closer__right .form{max-width:none}
+
+/* ---------- cards ---------- */
+.gets{list-style:none;margin:0;padding:0;width:100%;display:grid;gap:1rem}
+@media(min-width:700px){.gets{grid-template-columns:1fr 1fr}}
+.gets li{background:var(--white);border-radius:16px;box-shadow:var(--shadow);padding:1.35rem 1.45rem}
+.gets h3{margin-bottom:.35rem}
+.gets p{font-size:.92rem;line-height:1.55;color:var(--ink-soft)}
+.gets .emoji{font-size:1.5rem;line-height:1;display:block;margin-bottom:.6rem}
+
+/* ---------- tick list ---------- */
+.ticks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1rem}
+.ticks li{display:grid;grid-template-columns:1.5rem 1fr;gap:.7rem;align-items:start}
+.ticks li::before{content:"✅";font-size:.95rem;line-height:1.6}
+
+/* ---------- logo wall ---------- */
+.logos{list-style:none;margin:0;padding:0;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+@media(min-width:640px){.logos{grid-template-columns:repeat(3,1fr)}}
+.logos li{background:var(--white);border:1.5px solid var(--hair);border-radius:14px;
+  min-height:78px;display:grid;place-items:center;padding:.9rem;
+  font-family:var(--head);font-weight:800;font-size:.95rem;color:var(--navy);text-align:center}
+
+/* ---------- quote ---------- */
+.bigquote{display:flex;flex-direction:column;gap:1.3rem}
+.bigquote blockquote{margin:0;font-family:var(--head);font-weight:800;
+  font-size:clamp(1.15rem,1rem + .9vw,1.6rem);line-height:1.32;color:var(--white)}
+.byline{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.face{border-radius:50%;width:104px;height:104px;object-fit:cover;flex:0 0 auto}
+.cologo{height:34px;width:auto;border-radius:6px}
+@media(min-width:520px){.cologo{margin-left:auto}}
+.logos img{max-height:30px;width:auto}
+
+/* ---------- members with faces ---------- */
+.members{list-style:none;margin:0;padding:0;width:100%;display:grid;gap:.8rem}
+@media(min-width:600px){.members{grid-template-columns:1fr 1fr}}
+.members li{background:var(--white);border-radius:16px;box-shadow:var(--shadow);
+  padding:.9rem 1rem;display:flex;align-items:center;gap:.85rem}
+.mface{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:0 0 auto}
+.members b{display:block;font-family:var(--head);font-weight:800;color:var(--navy);font-size:.98rem}
+.members span{font-size:.83rem;color:var(--ink-soft)}
+
+/* ---------- faq ---------- */
+.faq{width:100%;display:flex;flex-direction:column;gap:.7rem}
+details{background:var(--white);border-radius:16px;box-shadow:var(--shadow);padding:1.05rem 1.25rem}
+summary{font-family:var(--head);font-weight:800;color:var(--navy);cursor:pointer;list-style:none;
+  display:flex;justify-content:space-between;gap:1rem;font-size:1rem}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--pink);font-size:1.25rem;line-height:1;flex:0 0 auto}
+details[open] summary::after{content:"–"}
+details p{margin-top:.65rem;font-size:.92rem;color:var(--ink-soft)}
+
+/* ---------- media + placeholders ---------- */
+.media{width:100%;border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+/* crop to a shallow strip rather than letting a 3:2 photo eat 700px of height */
+.media--strip{aspect-ratio:16/6.5}
+.media--strip img{width:100%;height:100%;object-fit:cover;object-position:center 42%}
+@media(max-width:640px){.media--strip{aspect-ratio:16/10}}
+.split__media .media{aspect-ratio:4/3}
+.split__media .media img{width:100%;height:100%;object-fit:cover}
+/* Below the two-column breakpoint the image goes full width, and at 4:3 that eats a
+   whole screen. Crop to a shallow band instead so it reads as a strip, not a slide. */
+@media(max-width:759px){
+  .split__media .media,.closer__left .media{aspect-ratio:16/9;max-height:250px}
+  .split__media .media img,.closer__left .media img{width:100%;height:100%;object-fit:cover}
+}
+
+/* hand-drawn underline, the brand's own motif */
+.mark{position:relative;white-space:nowrap;color:var(--pink)}
+.mark>svg{position:absolute;left:0;bottom:-.1em;width:100%;height:.19em;overflow:visible}
+
+/* top testimonial card */
+.vouch{background:#F4F4F6;border-radius:20px;width:100%;margin:0;
+  padding:clamp(1.25rem,3.5vw,1.9rem) clamp(1.35rem,4vw,2.4rem);
+  display:flex;align-items:center;gap:clamp(1.1rem,3vw,2.2rem);
+  text-align:left;flex-direction:column}
+@media(min-width:640px){.vouch{flex-direction:row}}
+.vouch__quote{margin:0;font-family:var(--head);font-weight:800;font-style:italic;
+  font-size:clamp(.95rem,.9rem + .3vw,1.06rem);line-height:1.45;color:var(--navy);flex:1 1 auto}
+.vouch__who{display:flex;align-items:center;gap:.9rem;flex:0 0 auto}
+.vouch__who img{width:72px;height:72px;border-radius:50%;object-fit:cover;flex:0 0 auto}
+.vouch__name{display:flex;align-items:center;gap:.35rem;
+  font-family:var(--head);font-weight:800;font-size:clamp(1.05rem,1rem + .35vw,1.22rem);
+  color:var(--navy);line-height:1.2}
+.vouch__name svg{width:1.05em;height:1.05em;flex:0 0 auto}
+.vouch__role{font-size:clamp(.86rem,.83rem + .15vw,.95rem);color:var(--navy);
+  line-height:1.35;margin-top:.15rem}
+
+/* Slack lookalike. Deliberately uses a system sans, not Figtree, so it reads as a
+   screenshot rather than as our own branded content. Words are real, names redacted. */
+.slack{--sl-ink:#1D1C1D;--sl-grey:#616061;--sl-blue:#1264A3;--sl-line:#E8E8E8;
+  background:#FFF;border:1px solid var(--sl-line);border-radius:12px;
+  box-shadow:0 14px 38px rgba(22,23,62,.14);
+  width:100%;max-width:540px;text-align:left;overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.slack__bar{display:flex;align-items:center;gap:.4rem;padding:.7rem .95rem;
+  border-bottom:1px solid var(--sl-line);font-weight:700;font-size:.88rem;color:var(--sl-ink)}
+.slack__bar i{font-style:normal;color:var(--sl-grey);font-weight:400}
+.slack__body{padding:.95rem}
+.sm{display:grid;grid-template-columns:36px 1fr;gap:.6rem;padding:.45rem 0}
+.sm__av{width:36px;height:36px;border-radius:6px;background:#DDD;display:grid;place-items:center;
+  font-weight:700;font-size:.85rem;color:#FFF}
+.sm__head{display:flex;align-items:baseline;gap:.4rem;flex-wrap:wrap;margin-bottom:.1rem}
+.sm__name{font-weight:700;font-size:.87rem;color:var(--sl-ink);
+  background:#EFEFEF;border-radius:3px;padding:0 .3rem}
+.sm__time{font-size:.72rem;color:var(--sl-grey)}
+.sm__body{font-size:.87rem;line-height:1.46;color:var(--sl-ink)}
+.slack__count{font-size:.8rem;font-weight:700;color:var(--sl-blue);
+  padding:.35rem 0 .1rem 2.2rem}
+.slack__replies{padding-left:2.2rem}
+.slack__foot{background:#FBF6F3;border-top:1px solid var(--sl-line);
+  padding:.7rem .95rem;font-family:var(--head);font-weight:800;font-size:.78rem;color:var(--navy)}
+
+/* logo banner, high up */
+/* logo chips: white ground normalises the mixed backgrounds in the source files */
+/* flex, not grid, so an odd number centres its last row instead of orphaning left */
+.logobar{list-style:none;margin:0;padding:0;width:100%;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem}
+.logobar li{flex:0 1 calc(50% - .3rem);
+  background:var(--white);border:1.5px solid var(--hair);border-radius:12px;
+  height:74px;display:grid;place-items:center;padding:.7rem .9rem;overflow:hidden}
+@media(min-width:520px){.logobar li{flex:0 1 calc(33.333% - .4rem)}}
+@media(min-width:820px){.logobar li{flex:0 1 calc(25% - .45rem)}}
+.logobar img{max-height:44px;max-width:100%;width:auto;height:auto;object-fit:contain}
+.logobar img.logo-lg{max-height:58px}
+/* compact variant for the hero column */
+.logobar--hero{gap:.45rem}
+.logobar--hero li{flex:0 1 calc(25% - .35rem);height:56px;padding:.5rem .6rem;border-radius:10px}
+.logobar--hero img{max-height:30px}
+.logobar--hero img.logo-lg{max-height:40px}
+.ph{background:var(--ph);border:2px dashed var(--ph-line);border-radius:16px;
+  display:grid;place-items:center;padding:1.4rem;text-align:center;min-height:230px}
+.ph p{font-family:var(--head);font-weight:800;font-size:.8rem;line-height:1.45;
+  color:#8B8289;max-width:32ch}
+.ph--wide{min-height:300px}
+.ph--round{border-radius:50%;width:104px;height:104px;min-height:0;flex:0 0 auto;padding:.7rem}
+.ph--round p{font-size:.56rem}
+.ph--face{border-radius:50%;width:48px;height:48px;min-height:0;flex:0 0 auto;padding:0;
+  border-width:1.5px}
+.ph--face p{font-size:.42rem}
+
+/* ---------- logo marquee ---------- */
+.marquee{background:var(--pink-wash);padding:1.35rem 0 1.5rem;overflow:hidden;
+  border-bottom:1px solid var(--hair)}
+.marquee__label{font-family:var(--head);font-weight:800;font-size:.72rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--pink);text-align:center;margin-bottom:1rem}
+.marquee__mask{position:relative;
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.marquee__track{list-style:none;margin:0;padding:0;display:flex;width:max-content;
+  gap:.75rem;animation:marquee 55s linear infinite}
+.marquee__track li{flex:0 0 auto;width:150px;height:72px;background:var(--white);
+  border:1.5px solid var(--hair);border-radius:12px;
+  display:grid;place-items:center;padding:.7rem .9rem;overflow:hidden}
+.marquee__track img{max-height:40px;max-width:100%;width:auto;height:auto;object-fit:contain}
+.marquee__track img.logo-lg{max-height:52px}
+@keyframes marquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.marquee:hover .marquee__track{animation-play-state:paused}
+/* a permanently moving element is a real problem for vestibular disorders */
+@media(prefers-reduced-motion:reduce){
+  .marquee__track{animation:none;flex-wrap:wrap;justify-content:center;width:100%}
+  .marquee__track li:nth-child(n+20){display:none}
+  .marquee__mask{mask-image:none;-webkit-mask-image:none}
+}
+
+/* ---------- footer ----------
+   A standalone page on a fresh domain with no nav, no company name and no privacy
+   link reads as phishing, both to careful people and to Meta's ad reviewers. This
+   is the trust furniture the stripped nav took away. */
+.foot{background:var(--navy);color:rgba(239,239,244,.72);padding:2.75rem 1.5rem 2.25rem;
+  font-size:.82rem;line-height:1.6}
+.foot__in{max-width:var(--wide);margin:0 auto;display:flex;flex-direction:column;
+  align-items:center;gap:.9rem;text-align:center}
+.foot img{width:44px;height:44px}
+.foot a{color:var(--pink);text-decoration:underline;text-underline-offset:2px}
+.foot a:hover{color:#F5899C}
+.foot a:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+.foot__legal{font-size:.74rem;line-height:1.55;color:rgba(239,239,244,.55);max-width:56ch}
+.foot__strong{font-family:var(--head);font-weight:800;color:var(--white);font-size:.95rem}
+
+/* ---------- cookie consent ----------
+   The Meta Pixel sets non-essential tracking cookies. Under UK GDPR/PECR those need
+   consent BEFORE they're set, so the pixel only loads once Accept is clicked. The main
+   up-world.co site already has a banner, so this keeps the two consistent. */
+.cc{position:fixed;left:0;right:0;bottom:0;z-index:70;background:var(--navy);
+  color:rgba(239,239,244,.9);padding:.9rem 1.25rem;display:none;
+  box-shadow:0 -8px 26px rgba(0,0,0,.22)}
+.cc[data-show]{display:block}
+.cc__in{max-width:var(--wide);margin:0 auto;display:flex;flex-wrap:wrap;
+  align-items:center;justify-content:center;gap:.7rem 1.1rem;
+  font-size:.8rem;line-height:1.5;text-align:center}
+.cc a{color:var(--pink);text-decoration:underline}
+.cc__btns{display:flex;gap:.5rem;flex:0 0 auto}
+.cc__btn{font-family:var(--head);font-weight:800;font-size:.8rem;
+  padding:.5rem 1.1rem;border-radius:999px;cursor:pointer;border:1.5px solid var(--pink)}
+.cc__btn--yes{background:var(--pink);color:var(--white)}
+.cc__btn--no{background:transparent;color:var(--pink)}
+.cc__btn:focus-visible{outline:2px solid var(--white);outline-offset:2px}
+
+/* ---------- chrome ---------- */
+.top{padding:1.1rem 1.5rem;display:flex;justify-content:center}
+.top img{width:54px;height:54px}
+.promo{background:var(--navy);color:var(--white);text-align:center;padding:.75rem 1.5rem;
+  font-family:var(--head);font-weight:800;font-size:.88rem}
+
+/* ---------- popup ---------- */
+/* Kept in the layout with visibility/opacity rather than display:none, for two reasons:
+   a display:none container has no width, so HubSpot measures 0 and renders the embedded
+   form at zero height and never re-measures when it opens; and the overlay must be able
+   to SCROLL, because on a phone the heading + 5 stacked fields + button + terms is taller
+   than the screen, which previously put the submit button out of reach. */
+.scrim{position:fixed;inset:0;background:rgba(22,23,62,.78);
+  display:grid;align-items:start;justify-items:center;
+  padding:1rem;z-index:60;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease}
+.scrim[data-open]{visibility:visible;opacity:1;pointer-events:auto}
+.pop{background:var(--white);border-radius:20px;box-shadow:0 32px 68px rgba(0,0,0,.35);
+  max-width:420px;width:100%;padding:1.7rem 1.5rem;position:relative;text-align:center;
+  display:flex;flex-direction:column;gap:1rem;align-items:center;margin:auto 0}
+.pop h2{font-size:1.45rem;line-height:1.2}
+.pop__x{position:absolute;top:.5rem;right:.7rem;background:none;border:0;cursor:pointer;
+  font-family:var(--head);font-size:1.6rem;font-weight:800;color:var(--navy);line-height:1;padding:.25rem .4rem}
+.pop__x:focus-visible{outline:3px solid var(--pink);outline-offset:1px}
+.pop .form{box-shadow:none;padding:0;max-width:none}
+.pop details{width:100%;box-shadow:none;border:1px solid var(--hair);padding:.75rem 1rem}
+.pop details p{font-size:.73rem}
+/* terms need to be readable, but scrollable so they don't blow the modal open */
+.terms>div{max-height:190px;overflow-y:auto;margin-top:.5rem;padding-right:.4rem;text-align:left;
+  display:flex;flex-direction:column;gap:.5rem}
+.terms>div p{font-size:.7rem;line-height:1.45;color:var(--ink-soft)}
+.terms>div a{color:var(--pink)}
+@media(prefers-reduced-motion:no-preference){
+  .scrim[data-open] .pop{animation:pop .22s cubic-bezier(.2,.8,.3,1)}
+  @keyframes pop{from{transform:translateY(12px) scale(.98);opacity:0}}
+}
+
+/* The HubSpot form renders in a cross-origin iframe, so it cannot be styled from
+   here. Style it in HubSpot: Marketing > Forms > your form > Style tab. */
+/* Do NOT override the iframe's width/height/display. HubSpot's script measures the
+   form and sets the iframe height itself; forcing width:100%!important or
+   display:block!important makes it report a height of 0 and the form vanishes.
+   Tested 7 Aug 2026. Width and field layout are controlled in HubSpot's own
+   form editor, not from here. */
+.hs-form-frame{width:100%;align-self:stretch}
+
+/* Two-column hero so the form is on screen without scrolling. Stacks below 900px,
+   where the form necessarily sits under the headline. */
+.herogrid{display:grid;gap:2rem;align-items:center;justify-items:center;text-align:center}
+.herogrid__left{display:flex;flex-direction:column;gap:1.2rem;align-items:center;width:100%}
+.herogrid__right{width:100%;display:flex;justify-content:center}
+.herogrid__right .form{max-width:585px}
+@media(min-width:900px){
+  .herogrid{grid-template-columns:.9fr 1.1fr;gap:2.25rem;text-align:left;justify-items:stretch;align-items:start}
+  /* HubSpot collapses its two-column rows below roughly 500px of iframe width, so the
+     card is sized to keep the iframe above that. Narrower and First/Last Name stack. */
+  .herogrid__right .form{padding:1.5rem 1.35rem}
+  .herogrid .vouch{flex-direction:column;align-items:flex-start;gap:1rem;padding:1.2rem 1.4rem}
+  .herogrid .vouch__quote{font-size:.94rem}
+  .herogrid .vouch__who img{width:56px;height:56px}
+  .herogrid .vouch__name{font-size:1.02rem}
+  .herogrid__left{align-items:flex-start}
+  .herogrid h1{font-size:clamp(2.1rem,1.2rem + 2.4vw,2.85rem)}
+}
+</style>
+</head>
+<body>
+
+
+<header class="top"><a href="https://www.up-world.co" aria-label="Up World home"><img src="__LOGO__" alt="Up World" width="54" height="54"></a></header>
+
+<!-- 0. LOGO MARQUEE. Two identical sets slid by exactly -50% so the loop is seamless. -->
+<section class="marquee" aria-label="Brands whose marketers are Up Club members">
+  <p class="marquee__label">Join marketers from</p>
+  <div class="marquee__mask">
+    <ul class="marquee__track">
+      <li><img src="__LOGO_BLOOMWILD__" alt="Bloom &amp; Wild"></li>
+      <li><img src="__LOGO_GAILS__" alt="GAIL&rsquo;s"></li>
+      <li><img src="__LOGO_ODDBOX__" alt="Oddbox"></li>
+      <li><img src="__LOGO_OLIO__" alt="Olio"></li>
+      <li><img src="__LOGO_SKINANDME__" alt="Skin + Me"></li>
+      <li><img src="__LOGO_HUCKLETREE__" alt="Huckletree"></li>
+      <li><img src="__LOGO_MOTH__" alt="MOTH Drinks"></li>
+      <li><img src="__LOGO_WILDFARMED__" alt="Wildfarmed"></li>
+      <li><img src="__LOGO_GU__" alt="Gu Desserts"></li>
+      <li><img src="__LOGO_PROPER__" alt="PROPER"></li>
+      <li><img src="__LOGO_TOTM__" alt="TOTM"></li>
+      <li><img src="__LOGO_GREENPEOPLE__" alt="Green People"></li>
+      <li><img src="__LOGO_HONEST__" alt="Honest Mobile"></li>
+      <li><img src="__LOGO_PICCOLO__" alt="Piccolo"></li>
+      <li><img src="__LOGO_YUMOVE__" alt="YuMOVE"></li>
+      <li><img src="__LOGO_CANDYKITTENS__" alt="Candy Kittens"></li>
+      <li><img src="__LOGO_ELIZABETHSCARLETT__" alt="Elizabeth Scarlett"></li>
+      <li><img src="__LOGO_JOEANDSEPHS__" alt="Joe &amp; Seph&rsquo;s"></li>
+      <li><img class="logo-lg" src="__LOGO_LULULEMON__" alt="lululemon"></li>
+      <li><img src="__LOGO_BLOOMWILD__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_GAILS__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_ODDBOX__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_OLIO__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_SKINANDME__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_HUCKLETREE__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_MOTH__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_WILDFARMED__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_GU__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_PROPER__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_TOTM__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_GREENPEOPLE__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_HONEST__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_PICCOLO__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_YUMOVE__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_CANDYKITTENS__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_ELIZABETHSCARLETT__" alt="" aria-hidden="true"></li>
+      <li><img src="__LOGO_JOEANDSEPHS__" alt="" aria-hidden="true"></li>
+      <li><img class="logo-lg" src="__LOGO_LULULEMON__" alt="" aria-hidden="true"></li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- 1. HERO: Sarah's card full width on top, then headline left / form right -->
+<section class="band band--white">
+  <div class="in in--wide" style="max-width:var(--hero)">
+    <div class="herogrid">
+      <div class="herogrid__left">
+        <h1>Stop <span class="mark">Googling<svg viewBox="92 372 672 34" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M 92.1875 403.605469 C 117.996094 405.96875 135.628906 405.527344 164.890625 400.757812 C 167.367188 400.382812 170.621094 399.894531 175.34375 399.160156 C 180.066406 398.492188 186.253906 397.613281 194.589844 396.800781 C 203.007812 395.96875 213.234375 395.367188 224.386719 394.832031 C 235.558594 394.308594 247.722656 393.933594 260.40625 393.691406 C 273.089844 393.445312 286.261719 393.332031 299.453125 393.25 C 306.03125 393.21875 312.589844 393.1875 319.070312 393.152344 C 325.4375 393.152344 331.773438 393.300781 337.976562 393.527344 C 362.792969 394.488281 385.765625 396.507812 402.601562 397.386719 C 411.019531 397.875 417.890625 398.167969 422.648438 398.316406 C 427.433594 398.476562 430.007812 398.511719 430.007812 398.511719 C 430.007812 398.511719 464.867188 399.144531 509.386719 399.960938 C 520.523438 400.171875 532.261719 400.382812 544.214844 400.609375 C 556.199219 400.886719 568.394531 401.066406 580.394531 401.179688 C 604.410156 401.410156 627.679688 401.34375 647.054688 401.148438 C 652.769531 401.097656 658.175781 401.019531 662.914062 400.839844 C 667.6875 400.675781 671.917969 400.480469 675.632812 400.253906 C 683.089844 399.84375 688.542969 399.40625 692.273438 399.113281 C 722.527344 396.589844 738.90625 391.265625 763.511719 383.300781 C 738.011719 378.808594 720.492188 377.441406 690.808594 379.605469 C 687.144531 379.851562 681.789062 380.242188 674.558594 380.632812 C 670.941406 380.828125 666.839844 381.023438 662.246094 381.167969 C 657.625 381.332031 652.640625 381.414062 646.859375 381.460938 C 627.582031 381.640625 604.445312 381.707031 580.574219 381.496094 C 568.636719 381.378906 556.523438 381.203125 544.636719 380.941406 C 532.703125 380.730469 520.980469 380.519531 509.855469 380.324219 C 465.355469 379.558594 430.511719 378.972656 430.511719 378.972656 C 430.511719 378.972656 427.890625 378.9375 423.296875 378.777344 C 418.691406 378.628906 411.996094 378.335938 403.726562 377.847656 C 387.183594 376.953125 364.273438 374.917969 338.691406 373.890625 C 332.308594 373.628906 325.765625 373.46875 319.105469 373.46875 C 312.558594 373.5 305.949219 373.53125 299.320312 373.566406 C 286.117188 373.644531 272.84375 373.761719 260.03125 373.988281 C 247.214844 374.234375 234.839844 374.605469 223.460938 375.144531 C 212.078125 375.699219 201.738281 376.316406 192.652344 377.210938 C 183.84375 378.089844 177.414062 379.003906 172.511719 379.71875 C 167.609375 380.4375 164.273438 381.007812 161.730469 381.429688 C 131.722656 386.640625 116.042969 393.625 92.1875 403.605469 Z M 92.1875 403.605469 "/></svg></span> &ldquo;how to write a marketing strategy&rdquo;</h1>
+        <p class="kicker">Up Club is an exclusive community of startup marketers who&rsquo;ve all written one.</p>
+        <p class="lede soft">You&rsquo;ll have someone who sends you their budget splits, their paid ads brief, and the name of a freelancer who won&rsquo;t let you down. And someone to proofread your strategy before your founder sees it.</p>
+        <figure class="vouch">
+          <blockquote class="vouch__quote">&ldquo;Without a doubt one of the best marketing communities I&rsquo;ve ever been a part of. I can&rsquo;t recommend Up Club enough!&rdquo;</blockquote>
+          <figcaption class="vouch__who">
+            <img src="__FACE_SARAH__" alt="Sarah Turner" width="72" height="72">
+            <div>
+              <p class="vouch__name">Sarah Turner <svg viewBox="0 0 24 24" aria-label="Verified" role="img"><path fill="#1D9BF0" d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81C14.67 2.63 13.43 1.75 12 1.75s-2.67.88-3.34 2.19c-1.39-.46-2.9-.2-3.91.81s-1.27 2.52-.81 3.91C2.63 9.33 1.75 10.57 1.75 12s.88 2.67 2.19 3.34c-.46 1.39-.2 2.9.81 3.91s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.34-2.19c1.39.46 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34z"/><path fill="#fff" d="M10.71 16.29l-3-3 1.42-1.42 1.58 1.59 4.16-4.17 1.42 1.42z"/></svg></p>
+              <p class="vouch__role">Marketing Manager, Beyond Wines</p>
+            </div>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="herogrid__right">
+        <div class="form" id="join" data-src="hero">
+          <div class="hs-form-frame" data-region="eu1" data-form-id="d8caabb9-4b4b-4b56-8a87-a1c43e1ded27" data-portal-id="25655163"></div>
+          <p class="note note--big">Doors open 5 October. Only 100 places.</p>
+          <p class="reassure">Free to join the waitlist. No card needed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. STATS -->
+<section class="band band--pink">
+  <div class="in in--wide in--mid">
+    <h2>Up Club in numbers</h2>
+    <ul class="stats">
+      <li><b>20%</b><span>Lift in lead-to-customer conversion after one member fixed her funnel</span></li>
+      <li><b>100</b><span>Places in the October cohort</span></li>
+      <li><b>92%</b><span>Of members increased their company&rsquo;s revenue after joining</span></li>
+      <li><b>7 mths</b><span>Until the average member secures their dream promotion</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 4. RECOGNITION -->
+<section class="band band--navy">
+  <div class="in in--wide">
+    <div class="split">
+      <div class="split__media"><figure class="media" style="margin:0"><img src="__IMG_RECOGNITION__" alt="An Up Club member taking notes at an event" width="1000" height="667"></figure></div>
+      <div class="split__body">
+        <h2>You&rsquo;re probably the only marketer where you work</h2>
+        <ul class="ticks">
+          <li>You&rsquo;re expected to deliver like a CMO, with nobody to sanity-check your decisions</li>
+          <li>You&rsquo;re making calls on budget and channels and hoping you&rsquo;ve got them right</li>
+          <li>You&rsquo;re always firefighting, so there&rsquo;s never time to get better at any of it</li>
+          <li>Everyone else seems to have mentors and contacts. You&rsquo;ve got Google and a Slack channel of one.</li>
+        </ul>
+        <div><a class="btn" href="#join">Join the Oct waitlist</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. WHAT IT IS -->
+<section class="band band--white">
+  <div class="in in--wide in--mid">
+    <h2>So what is Up Club?</h2>
+    <p class="lede soft">A paid membership for startup marketers. We only open 3 times a year, and our next cohort begins 5th October.</p>
+    <figure class="media media--strip" style="margin:0"><img src="__IMG_UPTALK__" alt="An Up Talk in progress, members listening and taking notes" width="1400" height="933"></figure>
+    <ul class="gets" style="text-align:left">
+      <li><span class="emoji">💬</span><h3>A private Slack group</h3><p>Instant access to peer insights and answers to your most pressing marketing problems.</p></li>
+      <li><span class="emoji">🧠</span><h3>1:1 mentorship with marketing leaders</h3><p>Get experienced input on tough decisions before they become costly mistakes.</p></li>
+      <li><span class="emoji">🎤</span><h3>Monthly talks with marketing leaders from brands killing it</h3><p>Bold Bean, MOTH, Thursday Dating, Damson Madder, Unplugged. (We call them Up Talks.)</p></li>
+      <li><span class="emoji">🔧</span><h3>Weekly problem-solving sessions</h3><p>Fixing a welcome flow that isn&rsquo;t driving first sales, getting out of TikTok view jail, setting up SEO properly when you&rsquo;re a startup. (We call them Huddle Ups.)</p></li>
+      <li><span class="emoji">📋</span><h3>Templates and recordings</h3><p>Take them and use them straight away.</p></li>
+      <li><span class="emoji">🤝</span><h3>Vetted freelancers and agencies</h3><p>A directory of people other members have actually used and would use again.</p></li>
+    </ul>
+    <a class="btn" href="#join">Join the Oct waitlist</a>
+  </div>
+</section>
+
+<!-- 6. WORKSHOP SPLIT -->
+<section class="band band--cream">
+  <div class="in in--wide">
+    <div class="split split--flip">
+      <div class="split__media"><figure class="media" style="margin:0"><img src="__IMG_WORKSHOP__" alt="Members at the Personal Development Workshop" width="1000" height="667"></figure></div>
+      <div class="split__body">
+        <p class="eyebrow">Starts your membership</p>
+        <h2>An in-person Personal Development Workshop</h2>
+        <p class="lede soft">Run by two marketing coaches: <a class="plink" href="https://www.linkedin.com/in/johanna-fawcett-23789521/" target="_blank" rel="noopener">Johanna Fawcett</a> (ex Zizzi, C&ocirc;te, P&amp;G) and <a class="plink" href="https://www.linkedin.com/in/lounylander/" target="_blank" rel="noopener">Lou Nylander</a> (fractional CMO &amp; coach). You&rsquo;ll work out how you work best, and leave with a plan for the next 12 weeks.</p>
+        <p class="small soft">&ldquo;It really helped me to step back and re-evaluate my longer term career goals and the steps that I can take now.&rdquo; <b>Charlotte Manley, The Coconut Collab</b></p>
+        <div><a class="btn" href="#join">Join the Oct waitlist</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. ANNE QUOTE -->
+<section class="band band--navy">
+  <div class="in">
+    <p class="eyebrow">One member</p>
+    <div class="bigquote">
+      <blockquote>&ldquo;Using the member guides, we built a structured weekly reporting system and fixed gaps in our customer acquisition funnel, which led to a 20% improvement in lead-to-customer conversion rates.&rdquo;</blockquote>
+      <p class="lede soft">&ldquo;I wear many hats in my job and needed proven strategies to grow efficiently. Learning from other brands helped me cut out guesswork and focus on what works.&rdquo;</p>
+      <div class="byline">
+        <img class="face" src="__IMG_ANNE__" alt="Anne Kuhsiek" width="104" height="104">
+        <p><b style="font-family:var(--head);color:#fff">Anne Kuhsiek</b><br><span class="small soft">Marketing Innovation Manager, Serious Tissues</span></p>
+        <img class="cologo" src="__IMG_SERIOUS__" alt="Serious Tissues" height="34">
+      </div>
+    </div>
+    <div style="text-align:center"><a class="btn" href="#join">Join the Oct waitlist</a></div>
+  </div>
+</section>
+
+
+<!-- 9. WHO'S IN THE ROOM -->
+<section class="band band--white">
+  <div class="in in--wide in--mid">
+    <h2>Who you&rsquo;ll be sitting next to</h2>
+    <p class="lede soft">Marketing and brand managers at startups, mostly the only one or one of two.</p>
+    <ul class="members" style="text-align:left">
+      <li><img class="mface" src="__FACE_YASMIN__" alt="Yasmin MacDonnell"><div><b>Yasmin MacDonnell</b><span>Senior Marketing Manager, Bloom &amp; Wild</span></div></li>
+      <li><img class="mface" src="__FACE_URMILA__" alt="Urmila Vadgama"><div><b>Urmila Vadgama</b><span>Social Media Executive, Gousto</span></div></li>
+      <li><img class="mface" src="__FACE_MALINI__" alt="Malini Aryapratheep"><div><b>Malini Aryapratheep</b><span>Brand Marketing Lead, Heights</span></div></li>
+      <li><img class="mface" src="__FACE_ALEXA__" alt="Alexa Scott-Dalgleish"><div><b>Alexa Scott-Dalgleish</b><span>Marketing Lead, Patch</span></div></li>
+      <li><img class="mface" src="__FACE_CARA__" alt="Cara Pring"><div><b>Cara Pring</b><span>Brand Manager, PROPER snacks</span></div></li>
+      <li><img class="mface" src="__FACE_TAYLOR__" alt="Taylor Churchman"><div><b>Taylor Churchman</b><span>Brand Manager, Simply Roasted Crisps</span></div></li>
+    </ul>
+    <a class="btn" href="#join">Join the Oct waitlist</a>
+  </div>
+</section>
+
+<!-- 10. WARNING -->
+<section class="band band--pink">
+  <div class="in in--mid">
+    <h2>There are marketers in here who&rsquo;ve already made the mistake you&rsquo;re about to make</h2>
+    <p class="kicker">Stop wasting budget on campaigns which don&rsquo;t work.</p>
+    <a class="btn" href="#join">Join the Oct waitlist</a>
+    <p class="note">Doors open 5 October. 100 places.</p>
+  </div>
+</section>
+
+<!-- 11. FAQ -->
+<section class="band band--white">
+  <div class="in in--mid">
+    <h2>The bits you&rsquo;re wondering about 🤔</h2>
+    <div class="faq" style="text-align:left">
+      <details open><summary>What does it cost?</summary><p>&pound;90 a quarter. Pay for the year up front and it&rsquo;s &pound;300, so you get two months free.</p></details>
+      <details><summary>My company would have to pay for it</summary><p>Most members get theirs to. We&rsquo;ll send you the one-pager that gets it signed off.</p></details>
+      <details><summary>Is it just a networking club?</summary><p>No. You get a mentor, weekly problem-solving sessions and a library of templates. The Slack is where the fast answers happen, not where the chat happens.</p></details>
+      <details><summary>How much time does it take?</summary><p>About two hours a week. Less if you just want the Slack, more if you come to everything.</p></details>
+      <details><summary>What if I get in and hate it?</summary><p>14 days, full refund, no argument.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- 12. CLOSE -->
+<section class="band band--navy">
+  <div class="in in--wide">
+    <div>
+      <h2>Stop Googling your marketing job</h2>
+      <p class="kicker" style="margin-top:.6rem">Join a community of marketers to shortcut the answers</p>
+    </div>
+    <div class="closer">
+      <div class="closer__left">
+        <figure class="media" style="margin:0"><img src="__IMG_CLOSE__" alt="Up Club members at a workshop" width="1600" height="1067"></figure>
+        <ul class="ticks">
+          <li>A private Slack group</li>
+          <li>1:1 mentorship with marketing leaders</li>
+          <li>Monthly Up Talks with brands you know</li>
+          <li>Weekly problem-solving sessions</li>
+          <li>The in-person Personal Development Workshop</li>
+          <li>Templates, recordings and a vetted freelancer directory</li>
+        </ul>
+        <p class="kicker">&pound;90 a quarter. Or &pound;300 for the year, which gets you two months free.</p>
+      </div>
+      <div class="closer__right">
+        <div class="form" data-src="close">
+          <div class="hs-form-frame" data-region="eu1" data-form-id="d8caabb9-4b4b-4b56-8a87-a1c43e1ded27" data-portal-id="25655163"></div>
+          <p class="note">Doors open 5 October. 100 places.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<p class="promo">Doors open 5 October &middot; 100 places</p>
+
+<footer class="foot">
+  <div class="foot__in">
+    <a href="https://www.up-world.co" aria-label="Up World"><img src="__LOGO__" alt="Up World" width="44" height="44"></a>
+    <p class="foot__strong">Up Club is part of <a href="https://www.up-world.co">Up World</a></p>
+    <p>Questions? Email <a href="mailto:sayhi@up-world.co">sayhi@up-world.co</a></p>
+    <p><a href="https://www.up-world.co/privacy-policy">Privacy policy</a></p>
+    <p class="foot__legal">The Copy Club Limited, trading as Up World. Registered in England and Wales, company number 11449958. Registered office: 20 Groveway, London SW9 0AR.</p>
+    <p class="foot__legal">&copy; 2026 The Copy Club Limited</p>
+  </div>
+</footer>
+
+<div class="cc" id="cc" role="region" aria-label="Cookie choice">
+  <div class="cc__in">
+    <span>We use cookies to measure how our ads perform. See our <a href="https://www.up-world.co/privacy-policy">privacy policy</a>.</span>
+    <span class="cc__btns">
+      <button class="cc__btn cc__btn--no" id="ccNo" type="button">Reject</button>
+      <button class="cc__btn cc__btn--yes" id="ccYes" type="button">Accept</button>
+    </span>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div class="scrim" id="scrim" role="dialog" aria-modal="true" aria-labelledby="popTitle">
+  <div class="pop">
+    <button class="pop__x" id="popX" aria-label="Close">&times;</button>
+    <h2 id="popTitle">Before you go, fancy a free year?</h2>
+    <p class="lede soft">We&rsquo;re giving away one In House annual membership, worth &pound;300. Winner drawn on 30 September.</p>
+    <div class="form" data-src="popup-prizedraw">
+      <div class="hs-form-frame" data-region="eu1" data-form-id="b8d61b3a-fb90-4c4e-94a7-5b27812da939" data-portal-id="25655163"></div>
+    </div>
+    <details class="terms">
+      <summary>Prize draw terms</summary>
+      <div>
+        <p><b>Promoter:</b> The Copy Club Limited, trading as Up World. Company number 11449958. Registered office: 20 Groveway, London SW9 0AR.</p>
+        <p><b>Who can enter.</b> UK residents aged 18 or over. Employees of the Promoter, their immediate families and anyone professionally connected with the draw are not eligible. Current Up Club members are not eligible.</p>
+        <p><b>How to enter.</b> Complete the form above. One entry per person. No purchase necessary.</p>
+        <p><b>Closing date.</b> 23:59 BST on 29 September 2026. Later entries will not be counted.</p>
+        <p><b>The prize.</b> One In House annual Up Club membership, worth &pound;300 including VAT, giving twelve months&rsquo; membership from the date it is claimed. One prize, one winner. No cash alternative and the prize is not transferable.</p>
+        <p><b>The draw.</b> The winner will be drawn at random from all valid entries on 30 September 2026 by someone independent of the draw, and contacted by email within two working days. If the winner does not respond within 14 days we may draw another winner.</p>
+        <p><b>Your details.</b> By entering you agree we may add your name and email address to our marketing emails about Up Club. You can unsubscribe any time using the link in any email. We handle your details in line with our <a href="https://www.up-world.co/privacy-policy" target="_blank" rel="noopener">privacy policy</a> and we will not sell them or pass them to anyone else for their own marketing.</p>
+        <p>This promotion is in no way sponsored, endorsed or administered by, or associated with, Meta, Facebook or Instagram. The Promoter&rsquo;s decision is final. These terms are governed by the law of England and Wales.</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<script>
+(function(){
+  var scrim=document.getElementById("scrim"),x=document.getElementById("popX");
+  var KEY="upclub_pop_seen",shown=false,armed=false,last=null;
+  try{ if(localStorage.getItem(KEY)) shown=true; }catch(e){}
+  setTimeout(function(){armed=true},6000);
+  function open(){
+    if(shown||!armed) return;
+    shown=true;
+    try{ localStorage.setItem(KEY,"1"); }catch(e){}
+    last=document.activeElement;
+    scrim.setAttribute("data-open","");
+    document.body.style.overflow="hidden";
+    x.focus();
+  }
+  function close(){
+    scrim.removeAttribute("data-open");
+    document.body.style.overflow="";
+    if(last&&last.focus) last.focus();
+  }
+  x.addEventListener("click",close);
+  scrim.addEventListener("click",function(e){ if(e.target===scrim) close(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape") close(); });
+  document.addEventListener("mouseout",function(e){ if(!e.relatedTarget&&e.clientY<=0) open(); });
+  if(window.matchMedia("(hover:none)").matches){
+    window.addEventListener("scroll",function(){
+      var d=document.documentElement;
+      if((window.scrollY+window.innerHeight)/d.scrollHeight>=0.5) open();
+    },{passive:true});
+  }
+})();
+</script>
+<script>
+/* ---- Meta Pixel, consent-gated ----
+   Pixel 1613619225934839. Loads only after Accept, because it sets non-essential
+   tracking cookies and UK PECR requires consent first.
+   Form submissions are detected via HubSpot's postMessage: the forms sit in a
+   cross-origin iframe, so a normal submit listener cannot see them.
+     waitlist form d8caabb9... -> Lead
+     prize draw   b8d61b3a... -> PrizeDrawEntry (custom)
+   Kept separate so Meta optimises on waitlist sign-ups, not raffle entries. */
+(function(){
+  var PIXEL="1613619225934839", KEY="upclub_cc", cc=document.getElementById("cc");
+  var WAITLIST="d8caabb9-4b4b-4b56-8a87-a1c43e1ded27";
+  var DRAW="b8d61b3a-fb90-4c4e-94a7-5b27812da939";
+  var pending=[];
+
+  function loadPixel(){
+    if(window.fbq) return;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+    (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init',PIXEL); fbq('track','PageView');
+    pending.forEach(function(a){fbq.apply(null,a)}); pending=[];
+  }
+  function track(){ 
+    var a=Array.prototype.slice.call(arguments);
+    if(window.fbq) fbq.apply(null,a); else pending.push(a);
+  }
+
+  var stored=null; try{stored=localStorage.getItem(KEY)}catch(e){}
+  if(stored==="granted") loadPixel();
+  else if(stored!=="denied" && cc) cc.setAttribute("data-show","");
+
+  function decide(v){
+    try{localStorage.setItem(KEY,v)}catch(e){}
+    if(cc) cc.removeAttribute("data-show");
+    if(v==="granted") loadPixel();
+  }
+  var y=document.getElementById("ccYes"), n=document.getElementById("ccNo");
+  if(y) y.addEventListener("click",function(){decide("granted")});
+  if(n) n.addEventListener("click",function(){decide("denied")});
+
+  window.addEventListener("message",function(e){
+    var d=e.data;
+    if(!d || d.type!=="hsFormCallback" || d.eventName!=="onFormSubmitted") return;
+    var id=(d.id||d.data&&d.data.formGuid)||"";
+    if(id===DRAW) track("trackCustom","PrizeDrawEntry");
+    else if(id===WAITLIST) track("track","Lead");
+    else track("track","Lead");
+  });
+})();
+</script>
+</body>
+</html>
