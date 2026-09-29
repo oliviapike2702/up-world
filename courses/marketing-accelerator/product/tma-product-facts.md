@@ -31,7 +31,11 @@ Internal-only positioning candour (never external): "At the end of this course h
 
 ## Modules and faces
 1. Marketing Strategy Live (Lottie) · 2. How to Build a Brand (Lottie) · 3. Growth & Testing (Pam) · 4. Big Reach Tiny Budgets (Brand Hackers, sometimes switches with 3) · 5. Operating Within a Business (Lottie) · 6. Leadership & Working with Founders (Lottie).
-Group coaches: Jo Fawcett (ex-CMO Zizzi), £1,400 per cohort; must attend the IRL kick-off day. ⚠ **Sam Thomson (ex-CMO Body Shop) is leaving** (Liv, 30 Jul 2026) and a replacement is being recruited. Until one is confirmed, **Jo is the only group coach**, and Sam must not appear in any copy. See the group-coaching capacity note below. Podcast guests have included Sam (Pott Gang), Charlotte (CMO Bloom & Wild), Andy (THIS), Daphne (ex Heights), Emma (Lean In), Luke (Lucky Saint), Rachel (CEO Koru Kids).
+Group coaches: Jo Fawcett (ex-CMO Zizzi) and **Lou Nylander** (confirmed 14 Sept 2026, replacing
+Sam Thomson), £1,400 per cohort; must attend the IRL kick-off day. Sam Thomson (ex-CMO Body Shop)
+left and must not appear in any copy. Podcast guests have included Sam (Pott Gang), Charlotte
+(CMO Bloom & Wild), Andy (THIS), Daphne (ex Heights), Emma (Lean In), Luke (Lucky Saint), Rachel
+(CEO Koru Kids).
 
 ## Extras
 - Coupon code TheMarketingAccelerator = 4 months free Up World access for course members.
@@ -47,10 +51,9 @@ Jo/Sam £2,800 · Meta ads £4,000 · grad dinner £1,500 · photographer £250 
 - Live data: HubSpot deal pipeline "The Marketing Accelerator"; Mailchimp folder "Accelerator Emails".
 
 
-## ⚠ Group-coaching capacity, Sept 2026 (added 30 Jul 2026)
+## Group-coaching capacity, Sept 2026 — resolved 14 Sept 2026
 
-Sam Thomson is leaving and no replacement is confirmed, so Jo Fawcett is currently the only group coach. Coaching runs in groups of four, never six, with one session per module across six modules. At the target of 25 paid that is 6 or 7 groups, so roughly 36 to 42 coaching sessions for one person. The playbook already flags group-coaching capacity as a past failure ("22 people != 20 slots again"), and it now needs doing before kick-off rather than after.
-
-**More coaches are being recruited and that is the fix** (Liv, 30 Jul). The thing to watch is the
-deadline rather than the plan: recruitment has to **conclude** before kick-off on 30 Sept, not just be
-underway. Lottie's LinkedIn post announcing it goes out w/c 10 Aug, which leaves about seven weeks.
+Sam Thomson left with no immediate replacement, which briefly left Jo Fawcett as the only group
+coach against a target of 25 paid (6-7 groups of four, ~36-42 sessions for one person). **Lou
+Nylander confirmed 14 Sept 2026** as the second coach, resolving this before kick-off (30 Sept),
+inside the "must conclude before kick-off" deadline this section originally flagged.

@@ -27,7 +27,7 @@ inside Up Collective (sister brands: Brand Hackers ~35 people, Up Talent = Laura
 |---|---|
 | Alfie | Growth/web freelancer (1 day/week): built the members area (Mar 2025) and knows the WordPress back end |
 | James Hickson | Go-to host for Up Talk firesides — send him the season's dates and let him pick |
-| Jo Fawcett & Sam Thomson | Exec coaches: deliver the PD workshop and TMA group coaching |
+| Jo Fawcett & Lou Nylander | Exec coaches: deliver the PD workshop and TMA group coaching (Lou replaced Sam Thomson, confirmed 14 Sept 2026) |
 | Laura | Up Talent — route recruitment queries to her; helps at events |
 | Will | Brand Hackers — route BH queries from the SayHi inbox to him |
 | Rachel | Collates member insights (e.g. from onboarding calls) |
