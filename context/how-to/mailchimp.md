@@ -133,6 +133,7 @@ Headers live in the "Up World email Headers (Mailchimp)" Canva file (`DAHPSjLy4n
 - When the headline text is longer than the original, reduce font size to maintain 3 lines max, then rebalance positions so spacing stays equal.
 - Brief format for future builds: "photo background, BMBC logo centred top, [headline] centred middle, [CTA text] pill button centred bottom, equal spacing throughout."
 - **Canva export gotcha:** Canva pages export at full page height (e.g. 1123px) even when the design only fills the top portion. Always crop the exported PNG to the visible photo area before uploading to Mailchimp — use the stdlib PNG crop script in this session or sips. Uncropped = massive white gap below the header image in the email.
+- **Check every merge tag resolves before sending, not just before scheduling a test.** Two live TMA promo sends (4 and 8 Sept 2026, ~3,497 and ~3,360 recipients) went out with a leftover unmerged placeholder date ("Tues 8th May" instead of the real date) because the template itself had the bug baked in — a test send can look fine and the live send still fail if the broken placeholder lives in a block the test path skips. Can't be undone once sent; the fix is to check the actual rendered date in the template before reusing it, not just before the first send of a new build.
 
 ---
 

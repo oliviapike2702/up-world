@@ -11,6 +11,7 @@ for this list, not generic best practice.
 
 **List:** Up World, list_id `db462cb289`.
 **Course:** starts 3 Sept 2026 · 20 spots · early bird closed 14 Jul 2026 with **8 sold → 12 left**.
+**Final close:** 29 sold against a target of 20-25 — sold out and over-subscribed.
 
 ---
 

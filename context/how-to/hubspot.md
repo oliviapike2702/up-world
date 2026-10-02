@@ -10,3 +10,10 @@ Also in HubSpot (from the Jan 2026 handover):
 - **Deals board** — agency membership pipeline (and the TMA pipeline)
 
 ✓ Partly documented (HubSpot source-of-truth PRD exists). ⚠ Add: flow setup, how course weekly emails run.
+
+## Gotcha: workflow trigger for iframe-embedded forms
+If a HubSpot form is embedded via iframe (as on up-club.co), the workflow trigger **"Form
+interaction has been completed"** is analytics/cookie-dependent and can silently fail to fire,
+even though the form submission and contact record are created correctly. Use **"Form was
+submitted"** instead — it's CRM-based and doesn't depend on cookies. Found Sept 2026 while
+debugging a workflow that looked broken but wasn't actually missing submissions.
